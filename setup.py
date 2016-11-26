@@ -37,26 +37,31 @@ def read(fname):
     """
     return open(os.path.join(here, fname)).read()
 
-requirements = []
+requirements = [
+    'pytest',
+    'mirakuru>=0.2',  # test executors helpers
+    'path.py>=4.2',
+    'port-for>=0.3.1',  # needed for random port selection
+    'redis'
+]
 
 test_requires = [
-    'pytest',
-    'pytest-cov'
+    'pytest-cov==2.4.0',
+    'pytest-xdist==1.15.0',
 ]
 
 extras_require = {
-    'docs': ['sphinx'],
     'tests': test_requires
 }
 
 setup(
     name='pytest-redis',
     version=package_version,
-    description='',
+    description='Redis fixtures and fixture factories for Pytest.',
     long_description=(
         read('README.rst') + '\n\n' + read('CHANGES.rst')
     ),
-    keywords='',
+    keywords='tests py.test pytest fixture redis',
     author='Clearcode - The A Room',
     author_email='thearoom@clearcode.cc',
     url='https://github.com/ClearcodeHQ/pytest-redis',
