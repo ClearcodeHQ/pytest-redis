@@ -1,4 +1,3 @@
 include *.rst *.py
-recursive-include src/pytest_redis *.py
-recursive-include docs *
+recursive-include src/pytest_redis *.py  *.conf
 prune docs/build

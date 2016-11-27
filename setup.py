@@ -16,15 +16,12 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with pytest-redis. If not, see <http://www.gnu.org/licenses/>.
-
+"""Installation module for pytest-redis."""
 
 import os
-import re
 from setuptools import setup, find_packages
 
 here = os.path.dirname(__file__)
-with open(os.path.join(here, 'src', 'pytest_redis', '__init__.py')) as v_file:
-    package_version = re.compile(r".*__version__ = '(.*?)'", re.S).match(v_file.read()).group(1)
 
 
 def read(fname):
@@ -37,6 +34,7 @@ def read(fname):
     """
     return open(os.path.join(here, fname)).read()
 
+
 requirements = [
     'pytest',
     'mirakuru>=0.2',  # test executors helpers
@@ -48,6 +46,7 @@ requirements = [
 test_requires = [
     'pytest-cov==2.4.0',
     'pytest-xdist==1.15.0',
+    'Mock==2.0.0',
 ]
 
 extras_require = {
@@ -56,7 +55,7 @@ extras_require = {
 
 setup(
     name='pytest-redis',
-    version=package_version,
+    version='0.0.0',
     description='Redis fixtures and fixture factories for Pytest.',
     long_description=(
         read('README.rst') + '\n\n' + read('CHANGES.rst')
@@ -70,7 +69,8 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
+        'License :: OSI Approved :: '
+        'GNU Lesser General Public License v3 or later (LGPLv3+)',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
@@ -86,4 +86,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
     extras_require=extras_require,
+    entry_points={
+        'pytest11': [
+            'pytest_redis = pytest_redis.plugin'
+        ]},
 )
