@@ -6,9 +6,12 @@ python:
 - '3.5'
 - pypy
 - pypy3
+env:
+- INSTALLATION="python setup.py develop" XDIST=1
+- INSTALLATION="pip install ." XDIST=0
 install:
 - pip install -r requirements-test.txt
-- python setup.py develop
+- "$INSTALLATION"
 - pip install pytest-redis[tests] coveralls wheel
 script:
 - py.test -v --cov pytest_redis tests/
