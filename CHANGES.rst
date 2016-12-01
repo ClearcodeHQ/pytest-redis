@@ -1,6 +1,9 @@
 CHANGELOG
 =========
 
-0.0.0
+unreleased
 -------
-- Created the pytest-redis [by Clearcode - The A Room]
+
+- [enhancements] command line and pytest.ini options for modifying host
+- [enhancements] command line and pytest.ini options for modifying port
+- [enhancements] command line and pytest.ini options for modifying logs directory destination

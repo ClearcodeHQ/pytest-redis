@@ -21,17 +21,41 @@ from tempfile import gettempdir
 from pytest_redis import factories
 
 
+_help_host = 'Host at which Redis will accept connections'
+_help_port = 'Port at which Redis will accept connections'
 _help_logsdir = "Logs directory location"
 
 
 def pytest_addoption(parser):
     """Define configuration options."""
     parser.addini(
+        name='redis_host',
+        help=_help_host,
+        default='127.0.0.1'
+    )
+    parser.addini(
+        name='redis_port',
+        help=_help_port,
+        default=None,
+    )
+    parser.addini(
         name='redis_logsdir',
         help=_help_logsdir,
         default=gettempdir(),
     )
 
+    parser.addoption(
+        '--redis-host',
+        action='store',
+        dest='redis_host',
+        help=_help_host,
+    )
+    parser.addoption(
+        '--redis-port',
+        action='store',
+        dest='redis_port',
+        help=_help_port
+    )
     parser.addoption(
         '--redis-logsdir',
         action='store',

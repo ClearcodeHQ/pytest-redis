@@ -37,7 +37,7 @@ def get_config(request):
     """Return a dictionary with config options."""
     config = {}
     options = [
-        'logsdir'
+        'logsdir', 'host', 'port'
     ]
     for option in options:
         option_name = 'redis_' + option
@@ -130,8 +130,8 @@ def redis_proc(executable=None, params=None, config_file=None,
         # TODO - change into options
         redis_conf = config_file or \
             Path(__file__).parent.abspath() / 'redis.conf'
-        redis_host = host or '127.0.0.1'  # TODO
-        redis_port = get_port(port) or get_port(6380)  # TODO
+        redis_host = host or config['host']
+        redis_port = get_port(port) or get_port(config['port'])
 
         pidfile = 'redis-server.{port}.pid'.format(port=redis_port)
         unixsocket = 'redis.{port}.sock'.format(port=redis_port)
