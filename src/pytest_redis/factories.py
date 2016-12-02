@@ -37,7 +37,7 @@ def get_config(request):
     """Return a dictionary with config options."""
     config = {}
     options = [
-        'logsdir', 'host', 'port'
+        'logsdir', 'host', 'port', 'exec'
     ]
     for option in options:
         option_name = 'redis_' + option
@@ -125,7 +125,7 @@ def redis_proc(executable=None, params=None, config_file=None,
         :returns: tcp executor
         """
         config = get_config(request)
-        redis_exec = executable or '/usr/bin/redis-server'  # TODO
+        redis_exec = executable or config['exec']
         redis_params = params or ''  # TODO
         # TODO - change into options
         redis_conf = config_file or \
@@ -144,7 +144,7 @@ def redis_proc(executable=None, params=None, config_file=None,
             )
 
         redis_executor = TCPExecutor(
-            '''{redis_exec} {config}
+            '''{redis_exec} {config} --daemonize no
             --pidfile {pidfile} --unixsocket {unixsocket}
             --dbfilename {dbfilename} --logfile {logfile_path}
             --port {port} --dir {tmpdir} {params}'''

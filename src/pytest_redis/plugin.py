@@ -21,6 +21,7 @@ from tempfile import gettempdir
 from pytest_redis import factories
 
 
+_help_exec = "Redis server executable"
 _help_host = 'Host at which Redis will accept connections'
 _help_port = 'Port at which Redis will accept connections'
 _help_logsdir = "Logs directory location"
@@ -28,6 +29,11 @@ _help_logsdir = "Logs directory location"
 
 def pytest_addoption(parser):
     """Define configuration options."""
+    parser.addini(
+        name='redis_exec',
+        help=_help_exec,
+        default='/usr/bin/redis-server'
+    )
     parser.addini(
         name='redis_host',
         help=_help_host,
@@ -44,6 +50,12 @@ def pytest_addoption(parser):
         default=gettempdir(),
     )
 
+    parser.addoption(
+        '--redis-exec',
+        action='store',
+        dest='redis_exec',
+        help=_help_exec,
+    )
     parser.addoption(
         '--redis-host',
         action='store',
