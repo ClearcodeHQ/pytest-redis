@@ -91,7 +91,7 @@ def extract_version(text):
 __all__ = ('redisdb', 'redis_proc')
 
 
-def redis_proc(executable=None, params=None, config_file=None,
+def redis_proc(executable=None, config_file=None,
                host=None, port=-1, logsdir=None, logs_prefix=''):
     """
     Fixture factory for pytest-redis.
@@ -126,8 +126,7 @@ def redis_proc(executable=None, params=None, config_file=None,
         """
         config = get_config(request)
         redis_exec = executable or config['exec']
-        redis_params = params or ''  # TODO
-        # TODO - change into options
+        # TODO: move into command line options already
         redis_conf = config_file or \
             Path(__file__).parent.abspath() / 'redis.conf'
         redis_host = host or config['host']
@@ -147,10 +146,9 @@ def redis_proc(executable=None, params=None, config_file=None,
             '''{redis_exec} {config} --daemonize no
             --pidfile {pidfile} --unixsocket {unixsocket}
             --dbfilename {dbfilename} --logfile {logfile_path}
-            --port {port} --dir {tmpdir} {params}'''
+            --port {port} --dir {tmpdir}'''
             .format(
                 redis_exec=redis_exec,
-                params=redis_params,
                 config=redis_conf,
                 pidfile=pidfile,
                 unixsocket=unixsocket,
