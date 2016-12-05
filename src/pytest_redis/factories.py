@@ -37,7 +37,7 @@ def get_config(request):
     """Return a dictionary with config options."""
     config = {}
     options = [
-        'logsdir', 'host', 'port', 'exec'
+        'logsdir', 'host', 'port', 'exec', 'timeout'
     ]
     for option in options:
         option_name = 'redis_' + option
@@ -91,14 +91,17 @@ def extract_version(text):
 __all__ = ('redisdb', 'redis_proc')
 
 
-def redis_proc(executable=None, config_file=None,
-               host=None, port=-1, logsdir=None, logs_prefix=''):
+def redis_proc(
+        executable=None, config_file=None, timeout=None, host=None, port=-1,
+        logsdir=None, logs_prefix=''
+):
     """
     Fixture factory for pytest-redis.
 
     :param str executable: path to redis-server
     :param str params: params
     :param str config_file: path to config file
+    :param int timeout: client's connection timeout
     :param str host: hostname
     :param str|int|tuple|set|list port:
         exact port (e.g. '8000', 8000)
@@ -126,7 +129,8 @@ def redis_proc(executable=None, config_file=None,
         """
         config = get_config(request)
         redis_exec = executable or config['exec']
-        # TODO: move into command line options already
+        redis_timeout = timeout or config['timeout']
+        # TODO - change into options
         redis_conf = config_file or \
             Path(__file__).parent.abspath() / 'redis.conf'
         redis_host = host or config['host']
@@ -144,12 +148,14 @@ def redis_proc(executable=None, config_file=None,
 
         redis_executor = TCPExecutor(
             '''{redis_exec} {config} --daemonize no
+            --timeout {timeout}
             --pidfile {pidfile} --unixsocket {unixsocket}
             --dbfilename {dbfilename} --logfile {logfile_path}
             --port {port} --dir {tmpdir}'''
             .format(
                 redis_exec=redis_exec,
                 config=redis_conf,
+                timeout=redis_timeout,
                 pidfile=pidfile,
                 unixsocket=unixsocket,
                 dbfilename=dbfilename,
