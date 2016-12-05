@@ -25,6 +25,7 @@ _help_exec = "Redis server executable"
 _help_host = 'Host at which Redis will accept connections'
 _help_port = 'Port at which Redis will accept connections'
 _help_logsdir = "Logs directory location"
+_help_timeout = "Client's connection timeout in seconds"
 
 
 def pytest_addoption(parser):
@@ -48,6 +49,11 @@ def pytest_addoption(parser):
         name='redis_logsdir',
         help=_help_logsdir,
         default=gettempdir(),
+    )
+    parser.addini(
+        name='redis_timeout',
+        help=_help_timeout,
+        default=30,
     )
 
     parser.addoption(
@@ -74,6 +80,12 @@ def pytest_addoption(parser):
         metavar='path',
         help=_help_logsdir,
         dest='redis_logsdir',
+    )
+    parser.addoption(
+        '--redis-timeout',
+        action='store',
+        dest='redis_timeout',
+        help=_help_timeout
     )
 
 
