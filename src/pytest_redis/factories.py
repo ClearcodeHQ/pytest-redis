@@ -37,7 +37,7 @@ def get_config(request):
     """Return a dictionary with config options."""
     config = {}
     options = [
-        'logsdir', 'host', 'port', 'exec', 'timeout'
+        'logsdir', 'host', 'port', 'exec', 'timeout', 'loglevel', 'db_count'
     ]
     for option in options:
         option_name = 'redis_' + option
@@ -88,19 +88,15 @@ def extract_version(text):
     return extracted_version
 
 
-__all__ = ('redisdb', 'redis_proc')
-
-
 def redis_proc(
-        executable=None, config_file=None, timeout=None, host=None, port=-1,
-        logsdir=None, logs_prefix=''
+        executable=None, timeout=None, host=None, port=-1, db_count=None,
+        logsdir=None, logs_prefix='', loglevel=None
 ):
     """
     Fixture factory for pytest-redis.
 
     :param str executable: path to redis-server
     :param str params: params
-    :param str config_file: path to config file
     :param int timeout: client's connection timeout
     :param str host: hostname
     :param str|int|tuple|set|list port:
@@ -109,8 +105,11 @@ def redis_proc(
         [(2000,3000)] or (2000,3000) - random available port from a given range
         [{4002,4003}] or {4002,4003} - random of 4002 or 4003 ports
         [(2000,3000), {4002,4003}] -random of given orange and set
+    :param int db_count: number of databases redis should have
     :param str logsdir: path to log directory
     :param str logs_prefix: prefix for log filename
+    :param str loglevel: redis log verbosity level.
+        One of debug, verbose, notice or warning
     :rtype: func
     :returns: function which makes a redis process
     """
@@ -130,15 +129,14 @@ def redis_proc(
         config = get_config(request)
         redis_exec = executable or config['exec']
         redis_timeout = timeout or config['timeout']
-        # TODO - change into options
-        redis_conf = config_file or \
-            Path(__file__).parent.abspath() / 'redis.conf'
         redis_host = host or config['host']
         redis_port = get_port(port) or get_port(config['port'])
+        redis_db_count = db_count or config['db_count']
 
         pidfile = 'redis-server.{port}.pid'.format(port=redis_port)
         unixsocket = 'redis.{port}.sock'.format(port=redis_port)
         dbfilename = 'dump.{port}.rdb'.format(port=redis_port)
+        redis_loglevel = loglevel or config['loglevel']
         redis_logsdir = Path(logsdir or config['logsdir'])
         logfile_path = redis_logsdir / \
             '{prefix}redis-server.{port}.log'.format(
@@ -147,19 +145,22 @@ def redis_proc(
             )
 
         redis_executor = TCPExecutor(
-            '''{redis_exec} {config} --daemonize no
-            --timeout {timeout}
+            '''{redis_exec} --daemonize no
+            --rdbcompression yes --appendonly no
+            --databases {db_count} --timeout {timeout}
             --pidfile {pidfile} --unixsocket {unixsocket}
-            --dbfilename {dbfilename} --logfile {logfile_path}
+            --dbfilename {dbfilename}
+            --logfile {logfile_path} --loglevel {loglevel}
             --port {port} --dir {tmpdir}'''
             .format(
                 redis_exec=redis_exec,
-                config=redis_conf,
+                db_count=redis_db_count,
                 timeout=redis_timeout,
                 pidfile=pidfile,
                 unixsocket=unixsocket,
                 dbfilename=dbfilename,
                 logfile_path=logfile_path,
+                loglevel=redis_loglevel,
                 port=redis_port,
                 tmpdir=gettempdir(),
             ),
@@ -185,7 +186,7 @@ def redis_proc(
     return redis_proc_fixture
 
 
-def redisdb(process_fixture_name, db=None, strict=True):
+def redisdb(process_fixture_name, db=0, strict=True):
     """
     Connection fixture factory for pytest-redis.
 
@@ -213,7 +214,7 @@ def redisdb(process_fixture_name, db=None, strict=True):
 
         redis_host = proc_fixture.host
         redis_port = proc_fixture.port
-        redis_db = db or 0  # TODO
+        redis_db = db
         redis_class = redis.StrictRedis if strict else redis.Redis
 
         redis_client = redis_class(
@@ -223,3 +224,6 @@ def redisdb(process_fixture_name, db=None, strict=True):
         return redis_client
 
     return redisdb_factory
+
+
+__all__ = ('redisdb', 'redis_proc')
