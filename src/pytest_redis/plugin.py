@@ -26,6 +26,8 @@ _help_host = 'Host at which Redis will accept connections'
 _help_port = 'Port at which Redis will accept connections'
 _help_logsdir = "Logs directory location"
 _help_timeout = "Client's connection timeout in seconds"
+_help_loglevel = "Redis log verbosity level"
+_help_db_count = "Number of redis databases"
 
 
 def pytest_addoption(parser):
@@ -54,6 +56,16 @@ def pytest_addoption(parser):
         name='redis_timeout',
         help=_help_timeout,
         default=30,
+    )
+    parser.addini(
+        name='redis_loglevel',
+        help=_help_loglevel,
+        default='notice',
+    )
+    parser.addini(
+        name='redis_db_count',
+        help=_help_db_count,
+        default=8,
     )
 
     parser.addoption(
@@ -86,6 +98,18 @@ def pytest_addoption(parser):
         action='store',
         dest='redis_timeout',
         help=_help_timeout
+    )
+    parser.addoption(
+        '--redis-loglevel',
+        action='store',
+        dest='redis_loglevel',
+        help=_help_loglevel
+    )
+    parser.addoption(
+        '--redis-db-count',
+        action='store',
+        dest='redis_db_count',
+        help=_help_db_count
     )
 
 

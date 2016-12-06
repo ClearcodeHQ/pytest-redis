@@ -14,7 +14,7 @@ install:
 - "$INSTALLATION"
 - pip install pytest-redis[tests] coveralls wheel
 script:
-- py.test -v --cov pytest_redis tests/
+- py.test -v --cov src/pytest_redis tests/
 - pylama
 - pyroma .
 after_success:
