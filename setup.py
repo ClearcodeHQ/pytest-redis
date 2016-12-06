@@ -55,7 +55,7 @@ extras_require = {
 
 setup(
     name='pytest-redis',
-    version='0.0.0',
+    version='1.0.0',
     description='Redis fixtures and fixture factories for Pytest.',
     long_description=(
         read('README.rst') + '\n\n' + read('CHANGES.rst')

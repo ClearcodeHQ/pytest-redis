@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+1.0.0
 -------
 
 - [enhancements] removed the possibility to pass the custom config. No need to include one in package now.
