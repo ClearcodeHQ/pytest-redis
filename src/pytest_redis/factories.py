@@ -210,7 +210,7 @@ def redisdb(process_fixture_name, db=0, strict=True):
         :rtype: redis.client.Redis
         :returns: Redis client
         """
-        proc_fixture = request.getfuncargvalue(process_fixture_name)
+        proc_fixture = request.getfixturevalue(process_fixture_name)
 
         redis_host = proc_fixture.host
         redis_port = proc_fixture.port
