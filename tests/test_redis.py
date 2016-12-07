@@ -68,7 +68,7 @@ def test_old_redis(request, version):
             lambda *args: StringIO(version)
     ):
         with pytest.raises(RedisUnsupported):
-            request.getfuncargvalue('redis_proc_to_mock')
+            request.getfixturevalue('redis_proc_to_mock')
 
 
 @pytest.mark.parametrize("versions,result", [
