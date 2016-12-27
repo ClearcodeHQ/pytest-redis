@@ -1,5 +1,5 @@
 # test runs requirements (versions we'll be testing against) - automatically updated by requires.io
-coverage==4.2 # pytest-cov
+coverage==4.3 # pytest-cov
 mirakuru==0.8.2
 path.py==9.0.1
 port-for==0.3.1
