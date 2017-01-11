@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- [cleanup] removed path.py dependency
+
 1.1.0
 -------
 
