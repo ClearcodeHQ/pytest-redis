@@ -22,7 +22,6 @@ from tempfile import gettempdir
 
 import pytest
 import redis
-from path import Path
 from mirakuru import TCPExecutor
 
 from pytest_redis.port import get_port
@@ -137,12 +136,14 @@ def redis_proc(
         unixsocket = 'redis.{port}.sock'.format(port=redis_port)
         dbfilename = 'dump.{port}.rdb'.format(port=redis_port)
         redis_loglevel = loglevel or config['loglevel']
-        redis_logsdir = Path(logsdir or config['logsdir'])
-        logfile_path = redis_logsdir / \
+        redis_logsdir = logsdir or config['logsdir']
+        logfile_path = os.path.join(
+            redis_logsdir,
             '{prefix}redis-server.{port}.log'.format(
                 prefix=logs_prefix,
                 port=redis_port
             )
+        )
 
         redis_executor = TCPExecutor(
             '''{redis_exec} --daemonize no

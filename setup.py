@@ -38,7 +38,6 @@ def read(fname):
 requirements = [
     'pytest>=3.0.0',
     'mirakuru>=0.2',  # test executors helpers
-    'path.py>=4.2',
     'port-for>=0.3.1',  # needed for random port selection
     'redis'
 ]
