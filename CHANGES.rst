@@ -1,9 +1,13 @@
 CHANGELOG
 =========
 
-1.1.1
+unreleased
 -------
 
+- [feature] ability to configure save option for redis in command line, pytest.ini or factory argument.
+
+1.1.1
+-------
 - [cleanup] removed path.py dependency
 
 1.1.0

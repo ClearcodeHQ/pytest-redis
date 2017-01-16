@@ -18,6 +18,7 @@
 """FIxture factories for pytest-redis."""
 import os
 import re
+from itertools import islice
 from tempfile import gettempdir
 
 import pytest
@@ -36,7 +37,8 @@ def get_config(request):
     """Return a dictionary with config options."""
     config = {}
     options = [
-        'logsdir', 'host', 'port', 'exec', 'timeout', 'loglevel', 'db_count'
+        'logsdir', 'host', 'port', 'exec', 'timeout', 'loglevel', 'db_count',
+        'save'
     ]
     for option in options:
         option_name = 'redis_' + option
@@ -89,6 +91,7 @@ def extract_version(text):
 
 def redis_proc(
         executable=None, timeout=None, host=None, port=-1, db_count=None,
+        save=None,
         logsdir=None, logs_prefix='', loglevel=None
 ):
     """
@@ -105,6 +108,7 @@ def redis_proc(
         [{4002,4003}] or {4002,4003} - random of 4002 or 4003 ports
         [(2000,3000), {4002,4003}] -random of given orange and set
     :param int db_count: number of databases redis should have
+    :param str save: redis save configuration setting
     :param str logsdir: path to log directory
     :param str logs_prefix: prefix for log filename
     :param str loglevel: redis log verbosity level.
@@ -131,6 +135,7 @@ def redis_proc(
         redis_host = host or config['host']
         redis_port = get_port(port) or get_port(config['port'])
         redis_db_count = db_count or config['db_count']
+        redis_save = save or config['save'] or '""'
 
         pidfile = 'redis-server.{port}.pid'.format(port=redis_port)
         unixsocket = 'redis.{port}.sock'.format(port=redis_port)
@@ -144,30 +149,34 @@ def redis_proc(
                 port=redis_port
             )
         )
+        command = [
+            redis_exec,
+            '--daemonize', 'no',
+            '--rdbcompression', 'yes',
+            '--appendonly', 'no',
+            '--databases', str(redis_db_count),
+            '--timeout', str(redis_timeout),
+            '--pidfile', pidfile,
+            '--unixsocket', unixsocket,
+            '--dbfilename', dbfilename,
+            '--logfile', logfile_path,
+            '--loglevel', redis_loglevel,
+            '--port', str(redis_port),
+            '--dir', gettempdir()
+        ]
+        if redis_save:
+            redis_save_parts = redis_save.split()
+            for time, change in zip(
+                    islice(redis_save_parts, 0, None, 2),
+                    islice(redis_save_parts, 1, None, 2)):
+                command.extend(['--save', '{0} {1}'.format(time, change)])
 
         redis_executor = TCPExecutor(
-            '''{redis_exec} --daemonize no
-            --rdbcompression yes --appendonly no
-            --databases {db_count} --timeout {timeout}
-            --pidfile {pidfile} --unixsocket {unixsocket}
-            --dbfilename {dbfilename}
-            --logfile {logfile_path} --loglevel {loglevel}
-            --port {port} --dir {tmpdir}'''
-            .format(
-                redis_exec=redis_exec,
-                db_count=redis_db_count,
-                timeout=redis_timeout,
-                pidfile=pidfile,
-                unixsocket=unixsocket,
-                dbfilename=dbfilename,
-                logfile_path=logfile_path,
-                loglevel=redis_loglevel,
-                port=redis_port,
-                tmpdir=gettempdir(),
-            ),
+            command,
             host=redis_host,
             port=redis_port,
             timeout=60,
+            shell=True
         )
         redis_version = extract_version(
             os.popen('{0} --version'.format(redis_exec)).read()
