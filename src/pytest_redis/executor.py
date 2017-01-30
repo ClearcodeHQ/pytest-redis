@@ -79,6 +79,10 @@ class RedisExecutor(TCPExecutor):
         ]
         if save:
             save_parts = save.split()
+            assert all((p.isdigit() for p in save_parts)), \
+                "all save arguments should be numbers"
+            assert len(save_parts) % 2 == 0, \
+                "there should be even number of elements passed to save"
             for time, change in zip(
                     islice(save_parts, 0, None, 2),
                     islice(save_parts, 1, None, 2)):

@@ -136,7 +136,7 @@ def redis_proc(
             loglevel=loglevel or config['loglevel'],
             logsdir=logsdir or config['logsdir'],
             logs_prefix=logs_prefix,
-            save=save or config['save'] or '"',
+            save=save or config['save'],
             host=host or config['host'],
             port=get_port(port) or get_port(config['port']),
             timeout=60,
