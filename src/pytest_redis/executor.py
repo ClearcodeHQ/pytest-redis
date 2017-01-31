@@ -33,7 +33,7 @@ class RedisExecutor(TCPExecutor):
 
     def __init__(
         self, executable, databases, redis_timeout, loglevel, logsdir,
-        logs_prefix, save='', daemonize='no', rdbcompression='yes',
+        logs_prefix='', save='', daemonize='no', rdbcompression=True,
         appendonly='no',  *args, **kwargs
     ):
         """
@@ -47,7 +47,7 @@ class RedisExecutor(TCPExecutor):
         :param str log_prefix: prefix for log filename
         :param str save: redis save configuration setting
         :param str daemonize:
-        :param str rdbcompression:
+        :param bool rdbcompression:
         :param str appendonly:
         """
         port = kwargs.get('port')
@@ -65,7 +65,7 @@ class RedisExecutor(TCPExecutor):
         command = [
             executable,
             '--daemonize', daemonize,
-            '--rdbcompression', rdbcompression,
+            '--rdbcompression', 'yes' if rdbcompression else 'no',
             '--appendonly', appendonly,
             '--databases', str(databases),
             '--timeout', str(redis_timeout),

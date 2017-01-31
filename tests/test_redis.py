@@ -3,11 +3,14 @@ from io import StringIO
 
 import pytest
 import mock
+import redis
 
 from pytest_redis import factories
+from pytest_redis.executor import RedisExecutor
 from pytest_redis.factories import (
-    RedisUnsupported, extract_version, compare_version
-)
+    RedisUnsupported, extract_version, compare_version,
+    get_config)
+from pytest_redis.port import get_port
 
 
 def test_redis(redisdb):
@@ -43,13 +46,36 @@ def test_second_redis(redisdb, redisdb2):
     assert redisdb2.get('test2') == 'test_other'
 
 
-redis_proc_save = factories.redis_proc(save="900 1 300 10")
-redisdb_save = factories.redisdb('redis_proc_save')
+@pytest.mark.parametrize('parameter, config_option, value', (
+    ({'save': '900 1 300 10'}, 'save', '900 1 300 10'),
+    ({'save': '900 1'}, 'save', '900 1'),
+    ({'rdbcompression': True}, 'rdbcompression', 'yes'),
+    ({'rdbcompression': False}, 'rdbcompression', 'no')
+))
+def test_redis_exec_configuration(request, parameter, config_option, value):
+    """
+    Check if RedisExecutor properly processes configuration options.
 
-
-def test_redis_save_config(redisdb_save):
-    """Test if save is properly set."""
-    assert redisdb_save.config_get('save') == {'save': "900 1 300 10"}
+    Improperly set options won't be set in redis,
+    and we won't be able to read it out of redis.
+    """
+    config = get_config(request)
+    redis_exec = RedisExecutor(
+        executable=config['exec'],
+        databases=4,
+        redis_timeout=config['timeout'],
+        loglevel=config['loglevel'],
+        logsdir=config['logsdir'],
+        port=get_port(None),
+        host=config['host'],
+        timeout=30,
+        **parameter
+    )
+    with redis_exec:
+        redis_client = redis.StrictRedis(
+            redis_exec.host, redis_exec.port, 0
+        )
+        assert redis_client.config_get(config_option) == {config_option: value}
 
 
 redis_proc_to_mock = factories.redis_proc(port=None)
