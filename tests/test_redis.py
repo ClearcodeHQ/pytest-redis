@@ -43,13 +43,13 @@ def test_second_redis(redisdb, redisdb2):
     assert redisdb2.get('test2') == 'test_other'
 
 
-redis_proc_random = factories.redis_proc(port=None)
-redisdb_random = factories.redisdb('redis_proc_random')
+redis_proc_save = factories.redis_proc(save="900 1 300 10")
+redisdb_save = factories.redisdb('redis_proc_save')
 
 
-def test_random_port(redisdb_random):
-    """Test if redis fixture can be started on random port."""
-    assert redisdb_random.keys('*') == []
+def test_redis_save_config(redisdb_save):
+    """Test if save is properly set."""
+    assert redisdb_save.config_get('save') == {'save': "900 1 300 10"}
 
 
 redis_proc_to_mock = factories.redis_proc(port=None)

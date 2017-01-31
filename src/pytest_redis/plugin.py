@@ -28,6 +28,7 @@ _help_logsdir = "Logs directory location"
 _help_timeout = "Client's connection timeout in seconds"
 _help_loglevel = "Redis log verbosity level"
 _help_db_count = "Number of redis databases"
+_help_save = "Redis persistance frequency configuration - seconds keys"
 
 
 def pytest_addoption(parser):
@@ -66,6 +67,11 @@ def pytest_addoption(parser):
         name='redis_db_count',
         help=_help_db_count,
         default=8,
+    )
+    parser.addini(
+        name='redis_save',
+        help=_help_save,
+        default=None,
     )
 
     parser.addoption(
@@ -110,6 +116,12 @@ def pytest_addoption(parser):
         action='store',
         dest='redis_db_count',
         help=_help_db_count
+    )
+    parser.addoption(
+        '--redis-save',
+        action='store',
+        dest='redis_save',
+        help=_help_save
     )
 
 

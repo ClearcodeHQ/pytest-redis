@@ -18,12 +18,11 @@
 """FIxture factories for pytest-redis."""
 import os
 import re
-from tempfile import gettempdir
 
 import pytest
 import redis
-from mirakuru import TCPExecutor
 
+from pytest_redis.executor import RedisExecutor
 from pytest_redis.port import get_port
 
 REQUIRED_VERSION = '2.6'
@@ -36,7 +35,8 @@ def get_config(request):
     """Return a dictionary with config options."""
     config = {}
     options = [
-        'logsdir', 'host', 'port', 'exec', 'timeout', 'loglevel', 'db_count'
+        'logsdir', 'host', 'port', 'exec', 'timeout', 'loglevel', 'db_count',
+        'save'
     ]
     for option in options:
         option_name = 'redis_' + option
@@ -89,13 +89,13 @@ def extract_version(text):
 
 def redis_proc(
         executable=None, timeout=None, host=None, port=-1, db_count=None,
+        save=None,
         logsdir=None, logs_prefix='', loglevel=None
 ):
     """
     Fixture factory for pytest-redis.
 
     :param str executable: path to redis-server
-    :param str params: params
     :param int timeout: client's connection timeout
     :param str host: hostname
     :param str|int|tuple|set|list port:
@@ -105,6 +105,7 @@ def redis_proc(
         [{4002,4003}] or {4002,4003} - random of 4002 or 4003 ports
         [(2000,3000), {4002,4003}] -random of given orange and set
     :param int db_count: number of databases redis should have
+    :param str save: redis save configuration setting
     :param str logsdir: path to log directory
     :param str logs_prefix: prefix for log filename
     :param str loglevel: redis log verbosity level.
@@ -127,46 +128,17 @@ def redis_proc(
         """
         config = get_config(request)
         redis_exec = executable or config['exec']
-        redis_timeout = timeout or config['timeout']
-        redis_host = host or config['host']
-        redis_port = get_port(port) or get_port(config['port'])
-        redis_db_count = db_count or config['db_count']
 
-        pidfile = 'redis-server.{port}.pid'.format(port=redis_port)
-        unixsocket = 'redis.{port}.sock'.format(port=redis_port)
-        dbfilename = 'dump.{port}.rdb'.format(port=redis_port)
-        redis_loglevel = loglevel or config['loglevel']
-        redis_logsdir = logsdir or config['logsdir']
-        logfile_path = os.path.join(
-            redis_logsdir,
-            '{prefix}redis-server.{port}.log'.format(
-                prefix=logs_prefix,
-                port=redis_port
-            )
-        )
-
-        redis_executor = TCPExecutor(
-            '''{redis_exec} --daemonize no
-            --rdbcompression yes --appendonly no
-            --databases {db_count} --timeout {timeout}
-            --pidfile {pidfile} --unixsocket {unixsocket}
-            --dbfilename {dbfilename}
-            --logfile {logfile_path} --loglevel {loglevel}
-            --port {port} --dir {tmpdir}'''
-            .format(
-                redis_exec=redis_exec,
-                db_count=redis_db_count,
-                timeout=redis_timeout,
-                pidfile=pidfile,
-                unixsocket=unixsocket,
-                dbfilename=dbfilename,
-                logfile_path=logfile_path,
-                loglevel=redis_loglevel,
-                port=redis_port,
-                tmpdir=gettempdir(),
-            ),
-            host=redis_host,
-            port=redis_port,
+        redis_executor = RedisExecutor(
+            executable=redis_exec,
+            databases=db_count or config['db_count'],
+            redis_timeout=timeout or config['timeout'],
+            loglevel=loglevel or config['loglevel'],
+            logsdir=logsdir or config['logsdir'],
+            logs_prefix=logs_prefix,
+            save=save or config['save'],
+            host=host or config['host'],
+            port=get_port(port) or get_port(config['port']),
             timeout=60,
         )
         redis_version = extract_version(
