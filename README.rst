@@ -89,6 +89,8 @@ You can pick which you prefer, but remember that these settings are handled in t
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
 | Redis log verbosity level | loglevel                 | --redis-loglevel    | redis_loglevel    | notice                |
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
+| Save configuration        | save                     | --redis-save        | redis_save        | ""                    |
++---------------------------+--------------------------+---------------------+-------------------+-----------------------+
 
 Example usage:
 
