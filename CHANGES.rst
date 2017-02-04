@@ -4,6 +4,8 @@ CHANGELOG
 unreleased
 -------
 
+- [feature] ability to configure rdbcompression for redis in command line, pytest.ini or factory argument.
+- [ehnacement] - RedisExecutor handling parameters and their translation to redis values if needed.
 - [feature] ability to configure save option for redis in command line, pytest.ini or factory argument.
 
 1.1.1

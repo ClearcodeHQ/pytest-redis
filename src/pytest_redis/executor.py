@@ -47,7 +47,7 @@ class RedisExecutor(TCPExecutor):
         :param str log_prefix: prefix for log filename
         :param str save: redis save configuration setting
         :param str daemonize:
-        :param bool rdbcompression:
+        :param bool rdbcompression: Compress redis dump files
         :param str appendonly:
         """
         port = kwargs.get('port')
