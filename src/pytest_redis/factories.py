@@ -36,7 +36,7 @@ def get_config(request):
     config = {}
     options = [
         'logsdir', 'host', 'port', 'exec', 'timeout', 'loglevel', 'db_count',
-        'save'
+        'save', 'compression'
     ]
     for option in options:
         option_name = 'redis_' + option
@@ -89,7 +89,7 @@ def extract_version(text):
 
 def redis_proc(
         executable=None, timeout=None, host=None, port=-1, db_count=None,
-        save=None,
+        save=None, compression=None,
         logsdir=None, logs_prefix='', loglevel=None
 ):
     """
@@ -106,6 +106,7 @@ def redis_proc(
         [(2000,3000), {4002,4003}] -random of given orange and set
     :param int db_count: number of databases redis should have
     :param str save: redis save configuration setting
+    :param bool compression: Compress redis dump files
     :param str logsdir: path to log directory
     :param str logs_prefix: prefix for log filename
     :param str loglevel: redis log verbosity level.
@@ -128,6 +129,8 @@ def redis_proc(
         """
         config = get_config(request)
         redis_exec = executable or config['exec']
+        rdbcompression = config['compression'] \
+            if compression is None else compression
 
         redis_executor = RedisExecutor(
             executable=redis_exec,
@@ -136,6 +139,7 @@ def redis_proc(
             loglevel=loglevel or config['loglevel'],
             logsdir=logsdir or config['logsdir'],
             logs_prefix=logs_prefix,
+            rdbcompression=rdbcompression,
             save=save or config['save'],
             host=host or config['host'],
             port=get_port(port) or get_port(config['port']),

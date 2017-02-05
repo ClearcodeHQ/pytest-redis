@@ -28,6 +28,7 @@ _help_logsdir = "Logs directory location"
 _help_timeout = "Client's connection timeout in seconds"
 _help_loglevel = "Redis log verbosity level"
 _help_db_count = "Number of redis databases"
+_help_compress = "Turn on redis dump files compression."
 _help_save = "Redis persistance frequency configuration - seconds keys"
 
 
@@ -72,6 +73,11 @@ def pytest_addoption(parser):
         name='redis_save',
         help=_help_save,
         default=None,
+    )
+    parser.addini(
+        name='redis_compression',
+        type='bool',
+        help=_help_compress
     )
 
     parser.addoption(
@@ -122,6 +128,12 @@ def pytest_addoption(parser):
         action='store',
         dest='redis_save',
         help=_help_save
+    )
+    parser.addoption(
+        '--redis-compression',
+        action="store_true",
+        dest='redis_compression',
+        help=_help_compress
     )
 
 

@@ -1,2 +1,4 @@
 [run]
-source = pytest_redis
+source = src/pytest_redis
+omit = */plugin.py
+
