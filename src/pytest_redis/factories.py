@@ -36,7 +36,7 @@ def get_config(request):
     config = {}
     options = [
         'logsdir', 'host', 'port', 'exec', 'timeout', 'loglevel', 'db_count',
-        'save', 'compression'
+        'save', 'compression', 'rdbchecksum'
     ]
     for option in options:
         option_name = 'redis_' + option
@@ -89,7 +89,7 @@ def extract_version(text):
 
 def redis_proc(
         executable=None, timeout=None, host=None, port=-1, db_count=None,
-        save=None, compression=None,
+        save=None, compression=None, checksum=None,
         logsdir=None, logs_prefix='', loglevel=None
 ):
     """
@@ -107,6 +107,7 @@ def redis_proc(
     :param int db_count: number of databases redis should have
     :param str save: redis save configuration setting
     :param bool compression: Compress redis dump files
+    :param bool checksum: Whether to add checksum to the rdb files
     :param str logsdir: path to log directory
     :param str logs_prefix: prefix for log filename
     :param str loglevel: redis log verbosity level.
@@ -131,6 +132,7 @@ def redis_proc(
         redis_exec = executable or config['exec']
         rdbcompression = config['compression'] \
             if compression is None else compression
+        rdbchecksum = config['rdbchecksum'] if checksum is None else checksum
 
         redis_executor = RedisExecutor(
             executable=redis_exec,
@@ -140,6 +142,7 @@ def redis_proc(
             logsdir=logsdir or config['logsdir'],
             logs_prefix=logs_prefix,
             rdbcompression=rdbcompression,
+            rdbchecksum=rdbchecksum,
             save=save or config['save'],
             host=host or config['host'],
             port=get_port(port) or get_port(config['port']),

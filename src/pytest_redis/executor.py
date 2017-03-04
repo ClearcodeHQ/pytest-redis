@@ -49,6 +49,7 @@ class RedisExecutor(TCPExecutor):
         :param str save: redis save configuration setting
         :param str daemonize:
         :param bool rdbcompression: Compress redis dump files
+        :param bool rdbchecksum: Whether to add checksum to the rdb files
         :param str appendonly:
         """
         port = kwargs.get('port')
