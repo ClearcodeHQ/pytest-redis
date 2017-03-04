@@ -34,6 +34,7 @@ class RedisExecutor(TCPExecutor):
     def __init__(
         self, executable, databases, redis_timeout, loglevel, logsdir,
         logs_prefix='', save='', daemonize='no', rdbcompression=True,
+        rdbchecksum=False,
         appendonly='no',  *args, **kwargs
     ):
         """
@@ -48,6 +49,7 @@ class RedisExecutor(TCPExecutor):
         :param str save: redis save configuration setting
         :param str daemonize:
         :param bool rdbcompression: Compress redis dump files
+        :param bool rdbchecksum: Whether to add checksum to the rdb files
         :param str appendonly:
         """
         port = kwargs.get('port')
@@ -65,7 +67,8 @@ class RedisExecutor(TCPExecutor):
         command = [
             executable,
             '--daemonize', daemonize,
-            '--rdbcompression', 'yes' if rdbcompression else 'no',
+            '--rdbcompression', self._redis_bool(rdbcompression),
+            '--rdbchecksum', self._redis_bool(rdbchecksum),
             '--appendonly', appendonly,
             '--databases', str(databases),
             '--timeout', str(redis_timeout),
@@ -91,3 +94,14 @@ class RedisExecutor(TCPExecutor):
         super(RedisExecutor, self).__init__(
             command, *args, shell=True, **kwargs
         )
+
+    @classmethod
+    def _redis_bool(cls, value):
+        """
+        Convert the boolean value to redis's yes/no.
+
+        :param bool value: boolean value to convert
+        :returns: yes for True, no for False
+        :rtype: str
+        """
+        return 'yes' if value and value != 'no' else 'no'

@@ -29,6 +29,7 @@ _help_timeout = "Client's connection timeout in seconds"
 _help_loglevel = "Redis log verbosity level"
 _help_db_count = "Number of redis databases"
 _help_compress = "Turn on redis dump files compression."
+_help_rdbchecksum = "Whether to add checksum to the rdb files"
 _help_save = "Redis persistance frequency configuration - seconds keys"
 
 
@@ -78,6 +79,11 @@ def pytest_addoption(parser):
         name='redis_compression',
         type='bool',
         help=_help_compress
+    )
+    parser.addini(
+        name='redis_rdbchecksum',
+        type='bool',
+        help=_help_rdbchecksum
     )
 
     parser.addoption(
@@ -134,6 +140,12 @@ def pytest_addoption(parser):
         action="store_true",
         dest='redis_compression',
         help=_help_compress
+    )
+    parser.addoption(
+        '--redis-rdbchecksum',
+        action="store_true",
+        dest='redis_rdbchecksum',
+        help=_help_rdbchecksum
     )
 
 

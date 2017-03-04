@@ -89,7 +89,9 @@ You can pick which you prefer, but remember that these settings are handled in t
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
 | Redis log verbosity level | loglevel                 | --redis-loglevel    | redis_loglevel    | notice                |
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| Compress dump files       | compress                 | --redis-compress    | redis_compress    | False                 |
+| Compress dump files       | compress                 | --redis-compress    | redis_compress    | True                  |
++---------------------------+--------------------------+---------------------+-------------------+-----------------------+
+| Add checksum to RDB files | checksum                 | --redis-rdbcompress | redis_rdbchecksum | False                 |
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
 | Save configuration        | save                     | --redis-save        | redis_save        | ""                    |
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
