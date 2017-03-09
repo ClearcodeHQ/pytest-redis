@@ -34,7 +34,7 @@ class RedisExecutor(TCPExecutor):
     def __init__(
         self, executable, databases, redis_timeout, loglevel, logsdir,
         logs_prefix='', save='', daemonize='no', rdbcompression=True,
-        rdbchecksum=False,
+        rdbchecksum=False, syslog_enabled=False,
         appendonly='no',  *args, **kwargs
     ):
         """
@@ -50,6 +50,8 @@ class RedisExecutor(TCPExecutor):
         :param str daemonize:
         :param bool rdbcompression: Compress redis dump files
         :param bool rdbchecksum: Whether to add checksum to the rdb files
+        :param bool syslog_enabled: Whether to enable logging
+            to the system logger
         :param str appendonly:
         """
         port = kwargs.get('port')
@@ -77,6 +79,7 @@ class RedisExecutor(TCPExecutor):
             '--dbfilename', dbfilename,
             '--logfile', logfile_path,
             '--loglevel', loglevel,
+            '--syslog-enabled', self._redis_bool(syslog_enabled),
             '--port', str(port),
             '--dir', gettempdir()
         ]
