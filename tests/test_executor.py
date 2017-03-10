@@ -42,6 +42,33 @@ def test_redis_exec_configuration(request, parameter, config_option, value):
         assert redis_client.config_get(config_option) == {config_option: value}
 
 
+@pytest.mark.parametrize('parameter, config_option, value', (
+        ({'syslog_enabled': True}, 'syslog-enabled', 'yes'),
+        ({'syslog_enabled': False}, 'syslog-enabled', 'no'),
+
+))
+def test_redis_exec(request, parameter, config_option, value):
+    """
+    Check if RedisExecutor properly starts with these configuration options.
+
+    Incorrect options won't even start redis.
+    """
+    config = get_config(request)
+    redis_exec = RedisExecutor(
+        executable=config['exec'],
+        databases=4,
+        redis_timeout=config['timeout'],
+        loglevel=config['loglevel'],
+        logsdir=config['logsdir'],
+        port=get_port(None),
+        host=config['host'],
+        timeout=30,
+        **parameter
+    )
+    with redis_exec:
+        assert redis_exec.running()
+
+
 @pytest.mark.parametrize('value, redis_value', (
     (True, 'yes'),
     (1, 'yes'),

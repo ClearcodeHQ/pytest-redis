@@ -30,6 +30,7 @@ _help_loglevel = "Redis log verbosity level"
 _help_db_count = "Number of redis databases"
 _help_compress = "Turn on redis dump files compression."
 _help_rdbchecksum = "Whether to add checksum to the rdb files"
+_help_syslog = "Whether to enable logging to the system logger"
 _help_save = "Redis persistance frequency configuration - seconds keys"
 
 
@@ -84,6 +85,11 @@ def pytest_addoption(parser):
         name='redis_rdbchecksum',
         type='bool',
         help=_help_rdbchecksum
+    )
+    parser.addini(
+        name='redis_syslog',
+        type='bool',
+        help=_help_syslog
     )
 
     parser.addoption(
@@ -146,6 +152,12 @@ def pytest_addoption(parser):
         action="store_true",
         dest='redis_rdbchecksum',
         help=_help_rdbchecksum
+    )
+    parser.addoption(
+        '--redis-syslog',
+        action="store_true",
+        dest='redis_syslog',
+        help=_help_syslog
     )
 
 

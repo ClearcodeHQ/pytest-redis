@@ -85,6 +85,9 @@ You can pick which you prefer, but remember that these settings are handled in t
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
 | number of databases       | db_count                 | --redis-db-count    | redis_db_count    | 8                     |
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
+| Whether to enable logging | syslog                   | --redis-syslog      | redis_syslog      | False                 |
+| to the system logger      |                          |                     |                   |                       |
++---------------------------+--------------------------+---------------------+-------------------+-----------------------+
 | Log directory location    | logsdir                  | --redis-logsdir     | redis_logsdir     | $TMPDIR               |
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
 | Redis log verbosity level | loglevel                 | --redis-loglevel    | redis_loglevel    | notice                |
