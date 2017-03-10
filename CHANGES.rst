@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+1.2.0
 -------
 
 - [feature] ability to configure syslog-enabled for redis in command line, pytest.ini or factory argument.
