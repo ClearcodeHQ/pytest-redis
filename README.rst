@@ -43,7 +43,7 @@ How to use
 
 Plugin contains two fixtures
 
-* **redis** - it's a client fixture that has functional scope. After each test, it cleans Redis database for more reliable tests.
+* **redisdb** - it's a client fixture that has functional scope. After each test, it cleans Redis database for more reliable tests.
 * **redis_proc** - session scoped fixture, that starts Redis instance at it's first use and stops at the end of the tests.
 
 Simply include one of these fixtures into your tests fixture list.
