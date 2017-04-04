@@ -3,7 +3,6 @@ CHANGELOG
 
 1.2.1
 -------
--------
 
 - [feature] ability to configure syslog-enabled for redis in command line, pytest.ini or factory argument.
 - [feature] ability to configure rdbchecksum for redis in command line, pytest.ini or factory argument.
