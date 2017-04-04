@@ -4,6 +4,11 @@ CHANGELOG
 1.2.1
 -------
 
+- [bugfix] raise specific error in case the redis executable path has been misconfigured or does not exists
+
+1.2.0
+-------
+
 - [feature] ability to configure syslog-enabled for redis in command line, pytest.ini or factory argument.
 - [feature] ability to configure rdbchecksum for redis in command line, pytest.ini or factory argument.
 - [feature] ability to configure rdbcompression for redis in command line, pytest.ini or factory argument.
