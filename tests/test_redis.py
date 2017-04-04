@@ -7,7 +7,7 @@ import mock
 from pytest_redis import factories
 from pytest_redis.factories import (
     RedisUnsupported, extract_version, compare_version,
-)
+    RedisMisconfigured)
 
 
 def test_redis(redisdb):
@@ -87,3 +87,15 @@ def test_compare_version(versions, result):
 def test_extract_version(text, result):
     """Check if the version extracction works correctly."""
     assert extract_version(text) == result
+
+
+redis_not_existing = factories.redis_proc(
+    executable='/not/redis/here/redis-server',
+    port=None
+)
+
+
+def test_not_existing_redis(request):
+    """Check handling of misconfigured redis executable path."""
+    with pytest.raises(RedisMisconfigured):
+        request.getfixturevalue('redis_not_existing')

@@ -52,6 +52,12 @@ class RedisUnsupported(Exception):
     pass
 
 
+class RedisMisconfigured(Exception):
+    """Exception raised when the redis_exec points to non existing file."""
+
+    pass
+
+
 def compare_version(version1, version2):
     """
     Compare two version numbers.
@@ -135,6 +141,24 @@ def redis_proc(
             if compression is None else compression
         rdbchecksum = config['rdbchecksum'] if checksum is None else checksum
 
+        version_string = os.popen('{0} --version'.format(redis_exec)).read()
+        if not version_string:
+            raise RedisMisconfigured(
+                'Bad path to redis_exec is given:'
+                ' {0} not exists or wrong program'.format(
+                    redis_exec
+                )
+            )
+
+        redis_version = extract_version(version_string)
+        cv_result = compare_version(redis_version, REQUIRED_VERSION)
+        if redis_version and cv_result < 0:
+            raise RedisUnsupported(
+                'Your version of Redis is not supported. '
+                'Consider updating to Redis {0} at least. '
+                'The currently installed version of Redis: {1}.'
+                .format(REQUIRED_VERSION, redis_version))
+
         redis_executor = RedisExecutor(
             executable=redis_exec,
             databases=db_count or config['db_count'],
@@ -150,16 +174,6 @@ def redis_proc(
             port=get_port(port) or get_port(config['port']),
             timeout=60,
         )
-        redis_version = extract_version(
-            os.popen('{0} --version'.format(redis_exec)).read()
-        )
-        cv_result = compare_version(redis_version, REQUIRED_VERSION)
-        if redis_version and cv_result < 0:
-            raise RedisUnsupported(
-                'Your version of Redis is not supported. '
-                'Consider updating to Redis {0} at least. '
-                'The currently installed version of Redis: {1}.'
-                .format(REQUIRED_VERSION, redis_version))
         redis_executor.start()
         request.addfinalizer(redis_executor.stop)
 
