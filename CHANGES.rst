@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- [feature] ability to configure decode_responses for redis client in command line, pytest.ini or factory argument.
+- [bugfix] set decode_responses to False, same as StrictRedis default
+- [enhancement] ability to change decode_responses value
+
 1.2.1
 -------
 
