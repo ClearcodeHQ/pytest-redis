@@ -4,6 +4,8 @@ CHANGELOG
 unreleased
 -------
 
+- [enhancement] RedisExecutor now provides attribute with path to unixsocket
+- [enhancement] redis client fixture now connects to redis through unixsocket by default
 - [enhancement] Version check got moved to executor, to be run just before starting Redis Server
 - [feature] ability to configure decode_responses for redis client in command line, pytest.ini or factory argument.
 - [bugfix] set decode_responses to False, same as StrictRedis default
