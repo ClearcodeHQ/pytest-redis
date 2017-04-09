@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- [bugfix] set decode_responses to False, same as StrictRedis default
+- [enhancement] ability to change decode_responses value
+
 1.2.1
 -------
 

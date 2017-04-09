@@ -182,13 +182,14 @@ def redis_proc(
     return redis_proc_fixture
 
 
-def redisdb(process_fixture_name, db=0, strict=True):
+def redisdb(process_fixture_name, db=0, strict=True, decode_responses=False):
     """
     Connection fixture factory for pytest-redis.
 
     :param str process_fixture_name: name of the process fixture
     :param int db: number of database
     :param bool strict: if true, uses StrictRedis client class
+    :param bool decode_responses: See StrictRedis decode_responses parameter
     :rtype: func
     :returns: function which makes a connection to redis
     """
@@ -214,7 +215,11 @@ def redisdb(process_fixture_name, db=0, strict=True):
         redis_class = redis.StrictRedis if strict else redis.Redis
 
         redis_client = redis_class(
-            redis_host, redis_port, redis_db, decode_responses=True)
+            redis_host,
+            redis_port,
+            redis_db,
+            decode_responses=decode_responses
+        )
         request.addfinalizer(redis_client.flushall)
 
         return redis_client
