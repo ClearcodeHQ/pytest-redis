@@ -73,7 +73,7 @@ You can pick which you prefer, but remember that these settings are handled in t
     * ``Configuration option in your pytest.ini file``
 
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| Redis option              | Fixture factory argument | Command line option | pytest.ini option | Default               |
+| Redis server option       | Fixture factory argument | Command line option | pytest.ini option | Default               |
 +===========================+==========================+=====================+===================+=======================+
 | executable                | executable               | --redis-exec        | redis_exec        | /usr/bin/redis-server |
 +---------------------------+--------------------------+---------------------+-------------------+-----------------------+
@@ -122,6 +122,14 @@ Example usage:
 
         [pytest]
         redis_port = 8888
+
+Options below are for configuring redis client fixture.
+
++---------------------+--------------------------+---------------------+-------------------+---------+
+| Redis client option | Fixture factory argument | Command line option | pytest.ini option | Default |
++=====================+==========================+=====================+===================+=========+
+| decode_response     | decode                   | --redis-decode      | redis_decode      | False   |
++---------------------+--------------------------+---------------------+-------------------+---------+
 
 Package resources
 -----------------

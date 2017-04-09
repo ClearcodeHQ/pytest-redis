@@ -36,7 +36,7 @@ def get_config(request):
     config = {}
     options = [
         'logsdir', 'host', 'port', 'exec', 'timeout', 'loglevel', 'db_count',
-        'save', 'compression', 'rdbchecksum', 'syslog'
+        'save', 'compression', 'rdbchecksum', 'syslog', 'decode'
     ]
     for option in options:
         option_name = 'redis_' + option
@@ -182,14 +182,15 @@ def redis_proc(
     return redis_proc_fixture
 
 
-def redisdb(process_fixture_name, db=0, strict=True, decode_responses=False):
+def redisdb(process_fixture_name, db=0, strict=True, decode=None):
     """
     Connection fixture factory for pytest-redis.
 
     :param str process_fixture_name: name of the process fixture
-    :param int db: number of database
+    :param int db: number of database to use
     :param bool strict: if true, uses StrictRedis client class
-    :param bool decode_responses: See StrictRedis decode_responses parameter
+    :param bool decode_responses: Client: to decode response or not.
+        See redis.StrictRedis decode_reponse client parameter.
     :rtype: func
     :returns: function which makes a connection to redis
     """
@@ -208,11 +209,13 @@ def redisdb(process_fixture_name, db=0, strict=True, decode_responses=False):
         :returns: Redis client
         """
         proc_fixture = request.getfixturevalue(process_fixture_name)
+        config = get_config(request)
 
         redis_host = proc_fixture.host
         redis_port = proc_fixture.port
         redis_db = db
         redis_class = redis.StrictRedis if strict else redis.Redis
+        decode_responses = decode if decode is not None else config['decode']
 
         redis_client = redis_class(
             redis_host,
