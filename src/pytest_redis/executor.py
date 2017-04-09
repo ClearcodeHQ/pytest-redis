@@ -17,10 +17,58 @@
 # along with pytest-redis.  If not, see <http://www.gnu.org/licenses/>.
 """Redis executor."""
 import os
+import re
 from itertools import islice
 from tempfile import gettempdir
 
 from mirakuru import TCPExecutor
+
+
+def compare_version(version1, version2):
+    """
+    Compare two version numbers.
+
+    :param str version1: first version to compare
+    :param str version2: second version to compare
+    :rtype: int
+    :returns: return value is negative if version1 < version2,
+        zero if version1 == version2
+        and strictly positive if version1 > version2
+    """
+    def normalize(v):
+        return [int(x) for x in re.sub(r'(\.0+)*$', '', v).split(".")]
+
+    def cmp_v(v1, v2):
+        return (v1 > v2) - (v1 < v2)
+    return cmp_v(normalize(version1), normalize(version2))
+
+
+def extract_version(text):
+    """
+    Extract version number from the text.
+
+    :param str text: text that contains the version number
+    :rtype: str
+    :returns: version number, e.g., "2.4.14"
+    """
+    match_object = re.search('\d+(?:\.\d+)+', text)
+    if match_object:
+        extracted_version = match_object.group(0)
+    else:
+        extracted_version = None
+    return extracted_version
+
+
+class RedisUnsupported(Exception):
+    """Exception raised when redis<2.6 would be detected."""
+
+    pass
+
+
+class RedisMisconfigured(Exception):
+    """Exception raised when the redis_exec points to non existing file."""
+
+    pass
 
 
 class RedisExecutor(TCPExecutor):
@@ -29,6 +77,11 @@ class RedisExecutor(TCPExecutor):
 
     Extended TCPExecutor to contain all required logic for parametrising
     and properly constructing command to start redis-server.
+    """
+
+    MIN_SUPPORTED_VERSION = '2.6'
+    """
+    Minimum required version of redis that is accepted by pytest-redis.
     """
 
     def __init__(
@@ -58,6 +111,7 @@ class RedisExecutor(TCPExecutor):
         pidfile = 'redis-server.{port}.pid'.format(port=port)
         unixsocket = 'redis.{port}.sock'.format(port=port)
         dbfilename = 'dump.{port}.rdb'.format(port=port)
+        self.executable = executable
 
         logfile_path = os.path.join(
             logsdir, '{prefix}redis-server.{port}.log'.format(
@@ -67,7 +121,7 @@ class RedisExecutor(TCPExecutor):
         )
 
         command = [
-            executable,
+            self.executable,
             '--daemonize', daemonize,
             '--rdbcompression', self._redis_bool(rdbcompression),
             '--rdbchecksum', self._redis_bool(rdbchecksum),
@@ -108,3 +162,30 @@ class RedisExecutor(TCPExecutor):
         :rtype: str
         """
         return 'yes' if value and value != 'no' else 'no'
+
+    def start(self):
+        """Check supported version before starting."""
+        self._check_version()
+        return super(RedisExecutor, self).start()
+
+    def _check_version(self):
+        """Check redises version if it's compatible."""
+        version_string = os.popen(
+            '{0} --version'.format(self.executable)
+        ).read()
+        if not version_string:
+            raise RedisMisconfigured(
+                'Bad path to redis_exec is given:'
+                ' {0} not exists or wrong program'.format(
+                    self.executable
+                )
+            )
+
+        redis_version = extract_version(version_string)
+        cv_result = compare_version(redis_version, self.MIN_SUPPORTED_VERSION)
+        if redis_version and cv_result < 0:
+            raise RedisUnsupported(
+                'Your version of Redis is not supported. '
+                'Consider updating to Redis {0} at least. '
+                'The currently installed version of Redis: {1}.'
+                .format(self.MIN_SUPPORTED_VERSION, redis_version))

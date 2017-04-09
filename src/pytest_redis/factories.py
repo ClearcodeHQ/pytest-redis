@@ -16,19 +16,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with pytest-redis.  If not, see <http://www.gnu.org/licenses/>.
 """FIxture factories for pytest-redis."""
-import os
-import re
-
 import pytest
 import redis
 
 from pytest_redis.executor import RedisExecutor
 from pytest_redis.port import get_port
-
-REQUIRED_VERSION = '2.6'
-"""
-Minimum required version of redis that is accepted by pytest-redis.
-"""
 
 
 def get_config(request):
@@ -44,53 +36,6 @@ def get_config(request):
             request.config.getini(option_name)
         config[option] = conf
     return config
-
-
-class RedisUnsupported(Exception):
-    """Exception raised when redis<2.6 would be detected."""
-
-    pass
-
-
-class RedisMisconfigured(Exception):
-    """Exception raised when the redis_exec points to non existing file."""
-
-    pass
-
-
-def compare_version(version1, version2):
-    """
-    Compare two version numbers.
-
-    :param str version1: first version to compare
-    :param str version2: second version to compare
-    :rtype: int
-    :returns: return value is negative if version1 < version2,
-        zero if version1 == version2
-        and strictly positive if version1 > version2
-    """
-    def normalize(v):
-        return [int(x) for x in re.sub(r'(\.0+)*$', '', v).split(".")]
-
-    def cmp_v(v1, v2):
-        return (v1 > v2) - (v1 < v2)
-    return cmp_v(normalize(version1), normalize(version2))
-
-
-def extract_version(text):
-    """
-    Extract version number from the text.
-
-    :param str text: text that contains the version number
-    :rtype: str
-    :returns: version number, e.g., "2.4.14"
-    """
-    match_object = re.search('\d+(?:\.\d+)+', text)
-    if match_object:
-        extracted_version = match_object.group(0)
-    else:
-        extracted_version = None
-    return extracted_version
 
 
 def redis_proc(
@@ -140,24 +85,6 @@ def redis_proc(
         rdbcompression = config['compression'] \
             if compression is None else compression
         rdbchecksum = config['rdbchecksum'] if checksum is None else checksum
-
-        version_string = os.popen('{0} --version'.format(redis_exec)).read()
-        if not version_string:
-            raise RedisMisconfigured(
-                'Bad path to redis_exec is given:'
-                ' {0} not exists or wrong program'.format(
-                    redis_exec
-                )
-            )
-
-        redis_version = extract_version(version_string)
-        cv_result = compare_version(redis_version, REQUIRED_VERSION)
-        if redis_version and cv_result < 0:
-            raise RedisUnsupported(
-                'Your version of Redis is not supported. '
-                'Consider updating to Redis {0} at least. '
-                'The currently installed version of Redis: {1}.'
-                .format(REQUIRED_VERSION, redis_version))
 
         redis_executor = RedisExecutor(
             executable=redis_exec,
