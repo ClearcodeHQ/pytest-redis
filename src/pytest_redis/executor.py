@@ -109,7 +109,8 @@ class RedisExecutor(TCPExecutor):
         """
         port = kwargs.get('port')
         pidfile = 'redis-server.{port}.pid'.format(port=port)
-        unixsocket = 'redis.{port}.sock'.format(port=port)
+        tmpdir = gettempdir()
+        self.unixsocket = tmpdir + '/redis.{port}.sock'.format(port=port)
         dbfilename = 'dump.{port}.rdb'.format(port=port)
         self.executable = executable
 
@@ -129,13 +130,13 @@ class RedisExecutor(TCPExecutor):
             '--databases', str(databases),
             '--timeout', str(redis_timeout),
             '--pidfile', pidfile,
-            '--unixsocket', unixsocket,
+            '--unixsocket', self.unixsocket,
             '--dbfilename', dbfilename,
             '--logfile', logfile_path,
             '--loglevel', loglevel,
             '--syslog-enabled', self._redis_bool(syslog_enabled),
             '--port', str(port),
-            '--dir', gettempdir()
+            '--dir', tmpdir
         ]
         if save:
             save_parts = save.split()

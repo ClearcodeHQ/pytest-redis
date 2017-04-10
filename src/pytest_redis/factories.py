@@ -148,6 +148,7 @@ def redisdb(process_fixture_name, db=0, strict=True, decode=None):
             redis_host,
             redis_port,
             redis_db,
+            unix_socket_path=proc_fixture.unixsocket,
             decode_responses=decode_responses
         )
         request.addfinalizer(redis_client.flushall)
