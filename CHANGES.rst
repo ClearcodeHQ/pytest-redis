@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+1.3.0
 -------
 
 - [enhancement] RedisExecutor now provides attribute with path to unixsocket
