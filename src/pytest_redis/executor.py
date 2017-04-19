@@ -147,7 +147,7 @@ class RedisExecutor(TCPExecutor):
             for time, change in zip(
                     islice(save_parts, 0, None, 2),
                     islice(save_parts, 1, None, 2)):
-                command.extend(['--save', '{0} {1}'.format(time, change)])
+                command.extend(['--save {0} {1}'.format(time, change)])
 
         super(RedisExecutor, self).__init__(
             command, *args, **kwargs
