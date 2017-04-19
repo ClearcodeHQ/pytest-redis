@@ -20,16 +20,16 @@ pytest-redis
 Package status
 --------------
 
-.. image:: https://travis-ci.org/ClearcodeHQ/pytest-redis.svg?branch=v1.3.0
+.. image:: https://travis-ci.org/ClearcodeHQ/pytest-redis.svg?branch=v1.3.1
     :target: https://travis-ci.org/ClearcodeHQ/pytest-redis
     :alt: Tests
 
-.. image:: https://coveralls.io/repos/ClearcodeHQ/pytest-redis/badge.png?branch=v1.3.0
-    :target: https://coveralls.io/r/ClearcodeHQ/pytest-redis?branch=v1.3.0
+.. image:: https://coveralls.io/repos/ClearcodeHQ/pytest-redis/badge.png?branch=v1.3.1
+    :target: https://coveralls.io/r/ClearcodeHQ/pytest-redis?branch=v1.3.1
     :alt: Coverage Status
 
-.. image:: https://requires.io/github/ClearcodeHQ/pytest-redis/requirements.svg?tag=v1.3.0
-     :target: https://requires.io/github/ClearcodeHQ/pytest-redis/requirements/?tag=v1.3.0
+.. image:: https://requires.io/github/ClearcodeHQ/pytest-redis/requirements.svg?tag=v1.3.1
+     :target: https://requires.io/github/ClearcodeHQ/pytest-redis/requirements/?tag=v1.3.1
      :alt: Requirements Status
 
 What is this?
