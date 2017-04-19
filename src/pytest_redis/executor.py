@@ -150,7 +150,7 @@ class RedisExecutor(TCPExecutor):
                 command.extend(['--save', '{0} {1}'.format(time, change)])
 
         super(RedisExecutor, self).__init__(
-            command, *args, shell=True, **kwargs
+            command, *args, **kwargs
         )
 
     @classmethod
