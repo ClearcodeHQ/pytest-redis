@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- [bugfix] do not run redis explicitly with shell=True
+
 1.3.0
 -------
 
