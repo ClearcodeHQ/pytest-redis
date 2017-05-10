@@ -43,7 +43,7 @@ requirements = [
 ]
 
 test_requires = [
-    'pytest-cov==2.4.0',
+    'pytest-cov==2.5.0',
     'pytest-xdist==1.16.0',
     'Mock==2.0.0',
 ]
