@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-unreleased
+1.3.2
 -------
 
 - [bugfix] - close file descriptor when reading redis version (by brunsgaard)
