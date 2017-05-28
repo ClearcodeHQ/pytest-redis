@@ -171,9 +171,8 @@ class RedisExecutor(TCPExecutor):
 
     def _check_version(self):
         """Check redises version if it's compatible."""
-        version_string = os.popen(
-            '{0} --version'.format(self.executable)
-        ).read()
+        with os.popen('{0} --version'.format(self.executable)) as p:
+            version_string = p.read()
         if not version_string:
             raise RedisMisconfigured(
                 'Bad path to redis_exec is given:'
