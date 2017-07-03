@@ -111,7 +111,7 @@ def redis_proc(
 
 def redisdb(process_fixture_name, db=0, strict=True, decode=None):
     """
-    Connection fixture factory for pytest-redis.
+    Create connection fixture factory for pytest-redis.
 
     :param str process_fixture_name: name of the process fixture
     :param int db: number of database to use
@@ -124,7 +124,7 @@ def redisdb(process_fixture_name, db=0, strict=True, decode=None):
     @pytest.fixture
     def redisdb_factory(request):
         """
-        Connection fixture for pytest-redis.
+        Create connection for pytest-redis.
 
         #. Load required process fixture.
         #. Get redis module and config.
