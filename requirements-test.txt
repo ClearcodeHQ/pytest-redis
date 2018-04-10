@@ -6,7 +6,7 @@ pytest==3.5.0
 redis==2.10.6
 pylama==7.4.3
 pyflakes==1.6.0
-pycodestyle==2.3.1
+pycodestyle==2.4.0
 pydocstyle==2.1.1
 mccabe==0.6.1
 pyroma==2.3
