@@ -51,7 +51,7 @@ def extract_version(text):
     :rtype: str
     :returns: version number, e.g., "2.4.14"
     """
-    match_object = re.search('\d+(?:\.\d+)+', text)
+    match_object = re.search(r'\d+(?:\.\d+)+', text)
     if match_object:
         extracted_version = match_object.group(0)
     else:
