@@ -60,7 +60,7 @@ You can also create additional redis client and process fixtures if you'd need t
 
 .. note::
 
-    Each RabbitMQ process fixture can be configured in a different way than the others through the fixture factory arguments.
+    Each Redis process fixture can be configured in a different way than the others through the fixture factory arguments.
 
 Configuration
 =============
