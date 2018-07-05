@@ -2,7 +2,7 @@
 coverage==4.5.1 # pytest-cov
 mirakuru==1.0.0
 port-for==0.4
-pytest==3.6.2
+pytest==3.6.3
 redis==2.10.6
 pylama==7.4.3
 pyflakes==2.0.0
