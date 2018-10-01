@@ -56,7 +56,7 @@ You can also create additional redis client and process fixtures if you'd need t
     from pytest_redis import factories
 
     redis_my_proc = factories.redis_proc(port=None, logsdir='/tmp')
-    redis_my = factories.redis('redis_my_proc')
+    redis_my = factories.redisdb('redis_my_proc')
 
 .. note::
 
