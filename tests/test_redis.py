@@ -1,7 +1,5 @@
 """Module containing all tests for pytest-redis."""
 
-from pytest_redis import factories
-
 
 def test_redis(redisdb):
     """Check that it's actually working on redis database."""
@@ -13,10 +11,6 @@ def test_redis(redisdb):
 
     test2 = redisdb.get('test2')
     assert test2 == b'test'
-
-
-redis_proc2 = factories.redis_proc(port=6381)
-redisdb2 = factories.redisdb('redis_proc2')
 
 
 def test_second_redis(redisdb, redisdb2):

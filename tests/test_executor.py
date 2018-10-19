@@ -48,12 +48,11 @@ def test_redis_exec_configuration(request, parameter, config_option, value):
         assert redis_client.config_get(config_option) == {config_option: value}
 
 
-@pytest.mark.parametrize('parameter, config_option, value', (
-        ({'syslog_enabled': True}, 'syslog-enabled', 'yes'),
-        ({'syslog_enabled': False}, 'syslog-enabled', 'no'),
-
+@pytest.mark.parametrize('parameter', (
+    {'syslog_enabled': True},
+    {'syslog_enabled': False},
 ))
-def test_redis_exec(request, parameter, config_option, value):
+def test_redis_exec(request, parameter):
     """
     Check if RedisExecutor properly starts with these configuration options.
 
@@ -87,7 +86,9 @@ def test_redis_exec(request, parameter, config_option, value):
 ))
 def test_convert_bool(value, redis_value):
     """Check correctness of the redis_bool method."""
+    # pylint:disable=protected-access
     assert RedisExecutor._redis_bool(value) == redis_value
+    # pylint:enable=protected-access
 
 
 @pytest.mark.parametrize('version', (

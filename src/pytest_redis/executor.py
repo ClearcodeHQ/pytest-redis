@@ -35,11 +35,11 @@ def compare_version(version1, version2):
         zero if version1 == version2
         and strictly positive if version1 > version2
     """
-    def normalize(v):
-        return [int(x) for x in re.sub(r'(\.0+)*$', '', v).split(".")]
+    def normalize(ver):
+        return [int(x) for x in re.sub(r'(\.0+)*$', '', ver).split(".")]
 
-    def cmp_v(v1, v2):
-        return (v1 > v2) - (v1 < v2)
+    def cmp_v(ver1, ver2):
+        return (ver1 > ver2) - (ver1 < ver2)
     return cmp_v(normalize(version1), normalize(version2))
 
 
@@ -85,11 +85,12 @@ class RedisExecutor(TCPExecutor):
     """
 
     def __init__(
-        self, executable, databases, redis_timeout, loglevel, logsdir,
-        logs_prefix='', save='', daemonize='no', rdbcompression=True,
-        rdbchecksum=False, syslog_enabled=False,
-        appendonly='no',  *args, **kwargs
-    ):
+            self, executable, databases, redis_timeout, loglevel, logsdir,
+            host, port, timeout=60,
+            logs_prefix='', save='', daemonize='no', rdbcompression=True,
+            rdbchecksum=False, syslog_enabled=False,
+            appendonly='no'
+    ):  # pylint:disable=too-many-locals
         """
         Init method of a RedisExecutor.
 
@@ -98,6 +99,9 @@ class RedisExecutor(TCPExecutor):
         :param int redis_timeout: client's connection timeout
         :param str loglevel: redis log verbosity level
         :param str logdir: path to log directory
+        :param str host: server's host
+        :param int port: server's port
+        :param int timeout: executor's timeout for start and stop actions
         :param str log_prefix: prefix for log filename
         :param str save: redis save configuration setting
         :param str daemonize:
@@ -107,11 +111,7 @@ class RedisExecutor(TCPExecutor):
             to the system logger
         :param str appendonly:
         """
-        port = kwargs.get('port')
-        pidfile = 'redis-server.{port}.pid'.format(port=port)
-        tmpdir = gettempdir()
-        self.unixsocket = tmpdir + '/redis.{port}.sock'.format(port=port)
-        dbfilename = 'dump.{port}.rdb'.format(port=port)
+        self.unixsocket = gettempdir() + '/redis.{port}.sock'.format(port=port)
         self.executable = executable
 
         logfile_path = os.path.join(
@@ -129,18 +129,18 @@ class RedisExecutor(TCPExecutor):
             '--appendonly', appendonly,
             '--databases', str(databases),
             '--timeout', str(redis_timeout),
-            '--pidfile', pidfile,
+            '--pidfile', 'redis-server.{port}.pid'.format(port=port),
             '--unixsocket', self.unixsocket,
-            '--dbfilename', dbfilename,
+            '--dbfilename', 'dump.{port}.rdb'.format(port=port),
             '--logfile', logfile_path,
             '--loglevel', loglevel,
             '--syslog-enabled', self._redis_bool(syslog_enabled),
             '--port', str(port),
-            '--dir', tmpdir
+            '--dir', gettempdir()
         ]
         if save:
             save_parts = save.split()
-            assert all((p.isdigit() for p in save_parts)), \
+            assert all((part.isdigit() for part in save_parts)), \
                 "all save arguments should be numbers"
             assert len(save_parts) % 2 == 0, \
                 "there should be even number of elements passed to save"
@@ -150,7 +150,7 @@ class RedisExecutor(TCPExecutor):
                 command.extend(['--save {0} {1}'.format(time, change)])
 
         super(RedisExecutor, self).__init__(
-            command, *args, **kwargs
+            command, host, port, timeout=timeout
         )
 
     @classmethod
@@ -171,8 +171,10 @@ class RedisExecutor(TCPExecutor):
 
     def _check_version(self):
         """Check redises version if it's compatible."""
-        with os.popen('{0} --version'.format(self.executable)) as p:
-            version_string = p.read()
+        with os.popen(
+                '{0} --version'.format(self.executable)
+        ) as version_output:
+            version_string = version_output.read()
         if not version_string:
             raise RedisMisconfigured(
                 'Bad path to redis_exec is given:'

@@ -17,10 +17,4 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with pytest-redis. If not, see <http://www.gnu.org/licenses/>.
 """Main module for pytest-redis."""
-
-import logging
-
 __version__ = '1.3.2'
-
-
-logger = logging.getLogger(__name__)
