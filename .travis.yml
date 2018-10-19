@@ -14,16 +14,25 @@ install:
 - pip install -r requirements-test.txt
 - pip install -e .[tests] coveralls wheel
 script:
-- py.test -v --cov src/pytest_redis tests/
-- pylama
-- pyroma .
+- py.test -v --cov pytest_redis tests/
 after_success:
 - coveralls
 jobs:
   include:
     - stage: xdist
       python: 3.6
-      script: py.test -n 1 --cov src/pytest_redis tests
+      script: py.test -n 1 --cov pytest_redis tests
+    - stage: linters
+      python: 3.6
+      install:
+      - pip install -r requirements-lint.txt
+      - pip install .[tests]
+      script:
+      - pycodestyle
+      - pydocstyle
+      - pylint pytest_redis tests
+      - pyroma .
+      after_success: skip
     - stage: deploy
       python: 3.6
       if: tag IS present

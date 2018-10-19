@@ -21,6 +21,7 @@ from tempfile import gettempdir
 from pytest_redis import factories
 
 
+# pylint:disable=invalid-name
 _help_exec = "Redis server executable"
 _help_host = 'Host at which Redis will accept connections'
 _help_port = 'Port at which Redis will accept connections'
@@ -179,3 +180,4 @@ def pytest_addoption(parser):
 
 redis_proc = factories.redis_proc()
 redisdb = factories.redisdb('redis_proc')
+# pylint:enable=invalid-name
