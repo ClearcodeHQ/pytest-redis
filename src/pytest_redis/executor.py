@@ -62,13 +62,9 @@ def extract_version(text):
 class RedisUnsupported(Exception):
     """Exception raised when redis<2.6 would be detected."""
 
-    pass
-
 
 class RedisMisconfigured(Exception):
     """Exception raised when the redis_exec points to non existing file."""
-
-    pass
 
 
 class RedisExecutor(TCPExecutor):
