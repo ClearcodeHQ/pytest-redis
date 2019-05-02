@@ -45,7 +45,7 @@ requirements = [
 test_requires = [
     'pytest-cov==2.6.1',
     'pytest-xdist==1.28.0',
-    'Mock==2.0.0',
+    'Mock==3.0.0',
 ]
 
 extras_require = {
