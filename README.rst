@@ -24,7 +24,7 @@ Package status
     :target: https://travis-ci.org/ClearcodeHQ/pytest-redis
     :alt: Tests
 
-.. image:: https://coveralls.io/repos/ClearcodeHQ/pytest-redis/badge.png?branch=v1.3.2
+.. image:: https://coveralls.io/repos/ClearcodeHQ/pytest-redis/badge.svg?branch=v1.3.2
     :target: https://coveralls.io/r/ClearcodeHQ/pytest-redis?branch=v1.3.2
     :alt: Coverage Status
 
