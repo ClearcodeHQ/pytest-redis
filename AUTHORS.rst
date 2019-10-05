@@ -13,3 +13,4 @@ of pytest-redis along its history.
 * Michał Masłowski
 * Sergei Barbarash
 * Jonas Brunsgaard (brunsgaard)
+* Damian Skrzypczak
