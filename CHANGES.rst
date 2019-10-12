@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+unreleased
+-------
+
+- [enhancement] dropped support for python 2.7
+
 1.3.2
 -------
 
