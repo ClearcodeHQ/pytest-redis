@@ -4,7 +4,7 @@ python:
 - 3.5
 - 3.6
 - 3.7
-- 3.8-dev
+- 3.8
 - pypy3
 # blocklist branches
 branches:
@@ -21,10 +21,10 @@ after_success:
 jobs:
   include:
     - stage: xdist
-      python: 3.7
+      python: 3.8
       script: py.test -n 1 --cov pytest_redis tests
     - stage: linters
-      python: 3.7
+      python: 3.8
       install:
       - pip install -r requirements-lint.txt
       script:
@@ -34,7 +34,7 @@ jobs:
       - pyroma .
       after_success: skip
     - stage: deploy
-      python: 3.7
+      python: 3.8
       if: tag IS present
       script: skip
       deploy:
