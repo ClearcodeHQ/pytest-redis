@@ -27,7 +27,7 @@ def test_second_redis(redisdb, redisdb2):
     assert redisdb2.get('test2') == b'test_other'
 
 
-def test_second_redis(redisdb2, redisdb2_noop):
+def test_external_redis(redisdb2, redisdb2_noop):
     """Check that nooproc connects to the same redis."""
     redisdb2.set('test1', 'test_other')
     redisdb2.set('test2', 'test_other')

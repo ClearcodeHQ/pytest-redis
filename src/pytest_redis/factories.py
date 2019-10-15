@@ -19,7 +19,7 @@
 import pytest
 import redis
 
-from pytest_redis.executor import RedisExecutor
+from pytest_redis.executor import RedisExecutor, NoopRedis
 from pytest_redis.port import get_port
 
 
