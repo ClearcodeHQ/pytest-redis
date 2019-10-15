@@ -132,7 +132,8 @@ def redis_noproc(host=None, port=None):
         config = get_config(request)
         redis_noopexecutor = NoopRedis(
             host=host or config['host'],
-            port=port or config['port'] or 6379
+            port=port or config['port'] or 6379,
+            unixsocket=None
         )
 
         return redis_noopexecutor
