@@ -32,10 +32,6 @@ Package status
     :target: https://coveralls.io/r/ClearcodeHQ/pytest-redis?branch=v1.3.2
     :alt: Coverage Status
 
-.. image:: https://requires.io/github/ClearcodeHQ/pytest-redis/requirements.svg?tag=v1.3.2
-     :target: https://requires.io/github/ClearcodeHQ/pytest-redis/requirements/?tag=v1.3.2
-     :alt: Requirements Status
-
 What is this?
 =============
 
@@ -45,10 +41,11 @@ It allows you to specify additional fixtures for Redis process and client.
 How to use
 ==========
 
-Plugin contains two fixtures
+Plugin contains three fixtures
 
 * **redisdb** - it's a client fixture that has functional scope. After each test, it cleans Redis database for more reliable tests.
 * **redis_proc** - session scoped fixture, that starts Redis instance at it's first use and stops at the end of the tests.
+* **redis_nooproc** - a nooprocess fixture, that's connecting to already running redis
 
 Simply include one of these fixtures into your tests fixture list.
 
@@ -66,6 +63,21 @@ You can also create additional redis client and process fixtures if you'd need t
 
     Each Redis process fixture can be configured in a different way than the others through the fixture factory arguments.
 
+
+Connecting to already existing redis database
+---------------------------------------------
+
+Some projects are using already running redis servers (ie on docker instances).
+In order to connect to them, one would be using the ``redis_nooproc`` fixture.
+
+.. code-block:: python
+
+    redis_external = factories.redisdb('redis_nooproc')
+
+By default the  ``redis_nooproc`` fixture would connect to postgresql instance using **6379** port. Standard configuration options apply to it.
+
+These are the configuration options that are working on all levels with the ``redis_nooproc`` fixture:
+
 Configuration
 =============
 
@@ -76,32 +88,81 @@ You can pick which you prefer, but remember that these settings are handled in t
     * ``Command line option``
     * ``Configuration option in your pytest.ini file``
 
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| Redis server option       | Fixture factory argument | Command line option | pytest.ini option | Default               |
-+===========================+==========================+=====================+===================+=======================+
-| executable                | executable               | --redis-exec        | redis_exec        | /usr/bin/redis-server |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| host                      | host                     | --redis-host        | redis_host        | 127.0.0.1             |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| port                      | port                     | --redis-port        | redis_port        | random                |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| connection timeout        | timeout                  | --redis-timeout     | redis_timeout     | 30                    |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| number of databases       | db_count                 | --redis-db-count    | redis_db_count    | 8                     |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| Whether to enable logging | syslog                   | --redis-syslog      | redis_syslog      | False                 |
-| to the system logger      |                          |                     |                   |                       |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| Log directory location    | logsdir                  | --redis-logsdir     | redis_logsdir     | $TMPDIR               |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| Redis log verbosity level | loglevel                 | --redis-loglevel    | redis_loglevel    | notice                |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| Compress dump files       | compress                 | --redis-compress    | redis_compress    | True                  |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| Add checksum to RDB files | checksum                 | --redis-rdbcompress | redis_rdbchecksum | False                 |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
-| Save configuration        | save                     | --redis-save        | redis_save        | ""                    |
-+---------------------------+--------------------------+---------------------+-------------------+-----------------------+
+.. list-table:: Configuration options
+   :header-rows: 1
+
+   * - Redis server option
+     - Fixture factory argument
+     - Command line option
+     - pytest.ini option
+     - Noop process fixture
+     - Default
+   * - executable
+     - executable
+     - --redis-exec
+     - redis_exec
+     - -
+     - /usr/bin/redis-server
+   * - host
+     - host
+     - --redis-host
+     - redis_host
+     - host
+     - 127.0.0.1
+   * - port
+     - port
+     - --redis-port
+     - redis_port
+     - port
+     - random
+   * - connection timeout
+     - timeout
+     - --redis-timeout
+     - redis_timeout
+     - -
+     - 30
+   * - number of databases
+     - db_count
+     - --redis-db-count
+     - redis_db_count
+     - -
+     - 8
+   * - Whether to enable logging to the system logger
+     - syslog
+     - --redis-syslog
+     - redis_syslog
+     - -
+     - False
+   * - Log directory location
+     - logsdir
+     - --redis-logsdir
+     - redis_logsdir
+     - -
+     - $TMPDIR
+   * - Redis log verbosity level
+     - loglevel
+     - --redis-loglevel
+     - redis_loglevel
+     - -
+     - notice
+   * - Compress dump files
+     - compress
+     - --redis-compress
+     - redis_compress
+     - -
+     - True
+   * - Add checksum to RDB files
+     - checksum
+     - --redis-rdbcompress
+     - redis_rdbchecksum
+     - -
+     - False
+   * - Save configuration
+     - save
+     - --redis-save
+     - redis_save
+     - -
+     - ""
 
 Example usage:
 

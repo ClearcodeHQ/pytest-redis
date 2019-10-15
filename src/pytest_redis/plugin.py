@@ -179,5 +179,6 @@ def pytest_addoption(parser):
 
 
 redis_proc = factories.redis_proc()
+redis_nooproc = factories.redis_noproc()
 redisdb = factories.redisdb('redis_proc')
 # pylint:enable=invalid-name

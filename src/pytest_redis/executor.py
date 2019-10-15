@@ -18,6 +18,7 @@
 """Redis executor."""
 import os
 import re
+from collections import namedtuple
 from itertools import islice
 from tempfile import gettempdir
 
@@ -65,6 +66,9 @@ class RedisUnsupported(Exception):
 
 class RedisMisconfigured(Exception):
     """Exception raised when the redis_exec points to non existing file."""
+
+
+NoopRedis = namedtuple('NoopRedis', 'host, port, unixsocket')
 
 
 class RedisExecutor(TCPExecutor):
