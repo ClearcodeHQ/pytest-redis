@@ -67,6 +67,9 @@ class RedisMisconfigured(Exception):
     """Exception raised when the redis_exec points to non existing file."""
 
 
+NoopRedis = namedtuple('NoopRedis', 'host, port, unixsocket')
+
+
 class RedisExecutor(TCPExecutor):
     """
     Reddis executor.

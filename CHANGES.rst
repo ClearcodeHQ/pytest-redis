@@ -4,6 +4,7 @@ CHANGELOG
 unreleased
 -------
 
+- [feature] ability to properly connect to already existing postgresql server using ``redis_nooproc`` fixture.
 - [enhancement] dropped support for python 2.7
 
 1.3.2

@@ -109,6 +109,37 @@ def redis_proc(
     return redis_proc_fixture
 
 
+def redis_noproc(host=None, port=None):
+    """
+    Nooproc fixture factory for pytest-redis.
+
+    :param str host: hostname
+    :param str|int port: exact port (e.g. '8000', 8000)
+    :rtype: func
+    :returns: function which makes a redis process
+    """
+    @pytest.fixture(scope='session')
+    def redis_nooproc_fixture(request):
+        """
+        Nooproc fixture for pytest-redis.
+
+        Builds mock executor to run tests with
+
+        :param FixtureRequest request: fixture request object
+        :rtype: pytest_redis.executors.TCPExecutor
+        :returns: tcp executor
+        """
+        config = get_config(request)
+        redis_noopexecutor = NoopRedis(
+            host=host or config['host'],
+            port=port or config['port'] or 6379
+        )
+
+        return redis_noopexecutor
+
+    return redis_nooproc_fixture
+
+
 def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
     """
     Create connection fixture factory for pytest-redis.
