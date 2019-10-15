@@ -18,6 +18,7 @@
 """Redis executor."""
 import os
 import re
+from collections import namedtuple
 from itertools import islice
 from tempfile import gettempdir
 
