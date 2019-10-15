@@ -7,4 +7,4 @@ coverage==4.5.4 # pytest-cov
 pytest-xdist==1.30.0
 Mock==3.0.5
 redis==3.3.11
-pip install -e .[tests]
+-e .[tests]
