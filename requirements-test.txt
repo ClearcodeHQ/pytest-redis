@@ -1,7 +1,7 @@
 # test runs requirements (versions we'll be testing against) - automatically updated by requires.io
 mirakuru==2.1.0; python_version>'3.5'
 port-for==0.4
-pytest==5.2.1
+pytest==5.2.2
 pytest-cov==2.8.1
 coverage==4.5.4 # pytest-cov
 pytest-xdist==1.30.0
