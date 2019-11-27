@@ -74,7 +74,7 @@ In order to connect to them, one would be using the ``redis_nooproc`` fixture.
 
     redis_external = factories.redisdb('redis_nooproc')
 
-By default the  ``redis_nooproc`` fixture would connect to postgresql instance using **6379** port. Standard configuration options apply to it.
+By default the  ``redis_nooproc`` fixture would connect to Redis instance using **6379** port. Standard configuration options apply to it.
 
 These are the configuration options that are working on all levels with the ``redis_nooproc`` fixture:
 
