@@ -43,11 +43,37 @@ How to use
 
 Plugin contains three fixtures
 
-* **redisdb** - it's a client fixture that has functional scope. After each test, it cleans Redis database for more reliable tests.
+* **redisdb** - This is a redis client fixture. It constructs a redis client and cleans redis database after the test.
+    It relies on redis_proc fixture, and as such the redis process is started at the very beginning of the first test
+    using this fixture, and stopped after the last test finishes.
 * **redis_proc** - session scoped fixture, that starts Redis instance at it's first use and stops at the end of the tests.
 * **redis_nooproc** - a nooprocess fixture, that's connecting to already running redis
 
 Simply include one of these fixtures into your tests fixture list.
+
+.. code-block:: python
+
+    #
+    def test_redis(redisdb):
+        """Check that it's actually working on redis database."""
+        redisdb.set('test1', 'test')
+        redisdb.set('test2', 'test')
+
+        my_functionality = MyRedisBasedComponent()
+        my_functionality.do_something()
+        assert my_functionality.did_something
+
+        assert redisdb.get("did_it") == 1
+
+For the example above works like following:
+
+1. pytest runs tests
+2. redis_proc starts redis database server
+3. redisdb creates client connection to the server
+4. test itself runs and finishes
+5. redisdb cleans up the redis
+6. redis_proc stops server (if that was the last test using it)
+7. pytest ends running tests
 
 You can also create additional redis client and process fixtures if you'd need to:
 
@@ -58,6 +84,17 @@ You can also create additional redis client and process fixtures if you'd need t
 
     redis_my_proc = factories.redis_proc(port=None, logsdir='/tmp')
     redis_my = factories.redisdb('redis_my_proc')
+
+    def test_my_redis(redis_my):
+        """Check that it's actually working on redis database."""
+        redis_my.set('test1', 'test')
+        redis_my.set('test2', 'test')
+
+        my_functionality = MyRedisBasedComponent()
+        my_functionality.do_something()
+        assert my_functionality.did_something
+
+        assert redis_my.get("did_it") == 1
 
 .. note::
 
@@ -73,6 +110,18 @@ In order to connect to them, one would be using the ``redis_nooproc`` fixture.
 .. code-block:: python
 
     redis_external = factories.redisdb('redis_nooproc')
+
+    def test_redis(redis_external):
+        """Check that it's actually working on redis database."""
+        redis_external.set('test1', 'test')
+        redis_external.set('test2', 'test')
+
+        my_functionality = MyRedisBasedComponent()
+        my_functionality.do_something()
+        assert my_functionality.did_something
+
+        assert redis_external.get("did_it") == 1
+
 
 By default the  ``redis_nooproc`` fixture would connect to Redis instance using **6379** port. Standard configuration options apply to it.
 
