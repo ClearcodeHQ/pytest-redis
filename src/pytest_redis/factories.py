@@ -141,7 +141,9 @@ def redis_noproc(host=None, port=None):
     return redis_nooproc_fixture
 
 
-def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
+def redisdb(
+        process_fixture_name, dbnum=0, strict=True, decode=None, scope=None
+):
     """
     Create connection fixture factory for pytest-redis.
 
@@ -150,10 +152,14 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
     :param bool strict: if true, uses StrictRedis client class
     :param bool decode_responses: Client: to decode response or not.
         See redis.StrictRedis decode_reponse client parameter.
+    :param str scope: scope of the pytest fixture
     :rtype: func
     :returns: function which makes a connection to redis
     """
-    @pytest.fixture
+    if scope is None:
+        scope = 'function'
+
+    @pytest.fixture(scope=scope)
     def redisdb_factory(request):
         """
         Create connection for pytest-redis.

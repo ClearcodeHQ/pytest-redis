@@ -1,5 +1,5 @@
 """Module containing all tests for pytest-redis."""
-
+from pytest_redis import factories
 
 def test_redis(redisdb):
     """Check that it's actually working on redis database."""
@@ -37,3 +37,19 @@ def test_external_redis(redisdb2, redisdb2_noop):
 
     assert redisdb2_noop.get('test1') == b'test_other'
     assert redisdb2_noop.get('test2') == b'test_other'
+
+
+def test_fixture_default_scope():
+    """Check that a default fixture scope is 'function'."""
+    redis_my_proc = factories.redis_proc(port=None, logsdir='/tmp')
+    redis_my = factories.redisdb('redis_my_proc')
+
+    assert redis_my._pytestfixturefunction.scope == 'function'
+
+
+def test_fixture_custom_scope():
+    """Check that a default fixture scope is 'function'."""
+    redis_my_proc = factories.redis_proc(port=None, logsdir='/tmp')
+    redis_my = factories.redisdb('redis_my_proc', scope='session')
+
+    assert redis_my._pytestfixturefunction.scope == 'session'
