@@ -4,7 +4,7 @@ port-for==0.4
 pytest==6.0.1
 pytest-cov==2.10.1
 coverage==5.2.1 # pytest-cov
-pytest-xdist==1.34.0
+pytest-xdist==2.0.0
 Mock==4.0.2
 redis==3.5.3
 -e .[tests]
