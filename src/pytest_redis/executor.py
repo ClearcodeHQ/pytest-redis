@@ -149,7 +149,7 @@ class RedisExecutor(TCPExecutor):
                     islice(save_parts, 1, None, 2)):
                 command.extend(['--save {0} {1}'.format(time, change)])
 
-        super(RedisExecutor, self).__init__(
+        super().__init__(
             command, host, port, timeout=timeout
         )
 
@@ -167,7 +167,7 @@ class RedisExecutor(TCPExecutor):
     def start(self):
         """Check supported version before starting."""
         self._check_version()
-        return super(RedisExecutor, self).start()
+        return super().start()
 
     def _check_version(self):
         """Check redises version if it's compatible."""
