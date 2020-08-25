@@ -26,7 +26,7 @@ class InvalidPortsDefinition(ValueError):
 
     def __init__(self, ports):
         """Construct InvalidPortsDefinition exception."""
-        super(InvalidPortsDefinition, self).__init__(
+        super().__init__(
             'Unknown format of ports: {0}.\n'.format(ports) + (
                 'You should provide a ports range "[(4000,5000)]"'
                 'or "(4000,5000)" or a comma-separated ports set'
@@ -74,8 +74,8 @@ def get_port(ports):
         nums = set(filter_by_type(ports, int))
         sets = set(chain(*filter_by_type(ports, (set, frozenset))))
         ports_set = ports_set.union(ranges, sets, nums)
-    except ValueError:
-        raise InvalidPortsDefinition
+    except ValueError as exc:
+        raise InvalidPortsDefinition from exc
 
     return port_for.select_random(ports_set)
 
