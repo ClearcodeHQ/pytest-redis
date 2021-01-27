@@ -3,7 +3,7 @@ mirakuru==2.3.0
 port-for==0.4
 pytest==6.2.2
 pytest-cov==2.11.1
-coverage==5.3.1 # pytest-cov
+coverage==5.4 # pytest-cov
 pytest-xdist==2.2.0
 Mock==4.0.3
 redis==3.5.3
