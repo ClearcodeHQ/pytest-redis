@@ -27,21 +27,39 @@ def get_config(request):
     """Return a dictionary with config options."""
     config = {}
     options = [
-        'logsdir', 'host', 'port', 'exec', 'timeout', 'loglevel', 'db_count',
-        'save', 'compression', 'rdbchecksum', 'syslog', 'decode'
+        "logsdir",
+        "host",
+        "port",
+        "exec",
+        "timeout",
+        "loglevel",
+        "db_count",
+        "save",
+        "compression",
+        "rdbchecksum",
+        "syslog",
+        "decode",
     ]
     for option in options:
-        option_name = 'redis_' + option
-        conf = request.config.getoption(option_name) or \
-            request.config.getini(option_name)
+        option_name = "redis_" + option
+        conf = request.config.getoption(option_name) or request.config.getini(option_name)
         config[option] = conf
     return config
 
 
 def redis_proc(
-        executable=None, timeout=None, host=None, port=-1, db_count=None,
-        save=None, compression=None, checksum=None, syslog=None,
-        logsdir=None, logs_prefix='', loglevel=None
+    executable=None,
+    timeout=None,
+    host=None,
+    port=-1,
+    db_count=None,
+    save=None,
+    compression=None,
+    checksum=None,
+    syslog=None,
+    logsdir=None,
+    logs_prefix="",
+    loglevel=None,
 ):
     """
     Fixture factory for pytest-redis.
@@ -67,7 +85,8 @@ def redis_proc(
     :rtype: func
     :returns: function which makes a redis process
     """
-    @pytest.fixture(scope='session')
+
+    @pytest.fixture(scope="session")
     def redis_proc_fixture(request):
         """
         Fixture for pytest-redis.
@@ -81,24 +100,23 @@ def redis_proc(
         :returns: tcp executor
         """
         config = get_config(request)
-        redis_exec = executable or config['exec']
-        rdbcompression = config['compression'] \
-            if compression is None else compression
-        rdbchecksum = config['rdbchecksum'] if checksum is None else checksum
+        redis_exec = executable or config["exec"]
+        rdbcompression = config["compression"] if compression is None else compression
+        rdbchecksum = config["rdbchecksum"] if checksum is None else checksum
 
         redis_executor = RedisExecutor(
             executable=redis_exec,
-            databases=db_count or config['db_count'],
-            redis_timeout=timeout or config['timeout'],
-            loglevel=loglevel or config['loglevel'],
-            logsdir=logsdir or config['logsdir'],
+            databases=db_count or config["db_count"],
+            redis_timeout=timeout or config["timeout"],
+            loglevel=loglevel or config["loglevel"],
+            logsdir=logsdir or config["logsdir"],
             logs_prefix=logs_prefix,
             rdbcompression=rdbcompression,
             rdbchecksum=rdbchecksum,
-            syslog_enabled=syslog or config['syslog'],
-            save=save or config['save'],
-            host=host or config['host'],
-            port=get_port(port) or get_port(config['port']),
+            syslog_enabled=syslog or config["syslog"],
+            save=save or config["save"],
+            host=host or config["host"],
+            port=get_port(port) or get_port(config["port"]),
             timeout=60,
         )
         redis_executor.start()
@@ -118,7 +136,8 @@ def redis_noproc(host=None, port=None):
     :rtype: func
     :returns: function which makes a redis process
     """
-    @pytest.fixture(scope='session')
+
+    @pytest.fixture(scope="session")
     def redis_nooproc_fixture(request):
         """
         Nooproc fixture for pytest-redis.
@@ -131,9 +150,7 @@ def redis_noproc(host=None, port=None):
         """
         config = get_config(request)
         redis_noopexecutor = NoopRedis(
-            host=host or config['host'],
-            port=port or config['port'] or 6379,
-            unixsocket=None
+            host=host or config["host"], port=port or config["port"] or 6379, unixsocket=None
         )
 
         return redis_noopexecutor
@@ -153,6 +170,7 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
     :rtype: func
     :returns: function which makes a connection to redis
     """
+
     @pytest.fixture
     def redisdb_factory(request):
         """
@@ -174,14 +192,14 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
         redis_port = proc_fixture.port
         redis_db = dbnum
         redis_class = redis.StrictRedis if strict else redis.Redis
-        decode_responses = decode if decode is not None else config['decode']
+        decode_responses = decode if decode is not None else config["decode"]
 
         redis_client = redis_class(
             redis_host,
             redis_port,
             redis_db,
             unix_socket_path=proc_fixture.unixsocket,
-            decode_responses=decode_responses
+            decode_responses=decode_responses,
         )
         request.addfinalizer(redis_client.flushall)
 
@@ -190,4 +208,4 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
     return redisdb_factory
 
 
-__all__ = ('redisdb', 'redis_proc')
+__all__ = ("redisdb", "redis_proc")
