@@ -36,11 +36,13 @@ def compare_version(version1, version2):
         zero if version1 == version2
         and strictly positive if version1 > version2
     """
+
     def normalize(ver):
-        return [int(x) for x in re.sub(r'(\.0+)*$', '', ver).split(".")]
+        return [int(x) for x in re.sub(r"(\.0+)*$", "", ver).split(".")]
 
     def cmp_v(ver1, ver2):
         return (ver1 > ver2) - (ver1 < ver2)
+
     return cmp_v(normalize(version1), normalize(version2))
 
 
@@ -52,7 +54,7 @@ def extract_version(text):
     :rtype: str
     :returns: version number, e.g., "2.4.14"
     """
-    match_object = re.search(r'\d+(?:\.\d+)+', text)
+    match_object = re.search(r"\d+(?:\.\d+)+", text)
     if match_object:
         extracted_version = match_object.group(0)
     else:
@@ -68,7 +70,7 @@ class RedisMisconfigured(Exception):
     """Exception raised when the redis_exec points to non existing file."""
 
 
-NoopRedis = namedtuple('NoopRedis', 'host, port, unixsocket')
+NoopRedis = namedtuple("NoopRedis", "host, port, unixsocket")
 
 
 class RedisExecutor(TCPExecutor):
@@ -79,17 +81,28 @@ class RedisExecutor(TCPExecutor):
     and properly constructing command to start redis-server.
     """
 
-    MIN_SUPPORTED_VERSION = '2.6'
+    MIN_SUPPORTED_VERSION = "2.6"
     """
     Minimum required version of redis that is accepted by pytest-redis.
     """
 
     def __init__(
-            self, executable, databases, redis_timeout, loglevel, logsdir,
-            host, port, timeout=60,
-            logs_prefix='', save='', daemonize='no', rdbcompression=True,
-            rdbchecksum=False, syslog_enabled=False,
-            appendonly='no'
+        self,
+        executable,
+        databases,
+        redis_timeout,
+        loglevel,
+        logsdir,
+        host,
+        port,
+        timeout=60,
+        logs_prefix="",
+        save="",
+        daemonize="no",
+        rdbcompression=True,
+        rdbchecksum=False,
+        syslog_enabled=False,
+        appendonly="no",
     ):  # pylint:disable=too-many-locals
         """
         Init method of a RedisExecutor.
@@ -111,47 +124,56 @@ class RedisExecutor(TCPExecutor):
             to the system logger
         :param str appendonly:
         """
-        self.unixsocket = gettempdir() + '/redis.{port}.sock'.format(port=port)
+        self.unixsocket = gettempdir() + "/redis.{port}.sock".format(port=port)
         self.executable = executable
 
         logfile_path = os.path.join(
-            logsdir, '{prefix}redis-server.{port}.log'.format(
-                prefix=logs_prefix,
-                port=port
-            )
+            logsdir, "{prefix}redis-server.{port}.log".format(prefix=logs_prefix, port=port)
         )
 
         command = [
             self.executable,
-            '--daemonize', daemonize,
-            '--rdbcompression', self._redis_bool(rdbcompression),
-            '--rdbchecksum', self._redis_bool(rdbchecksum),
-            '--appendonly', appendonly,
-            '--databases', str(databases),
-            '--timeout', str(redis_timeout),
-            '--pidfile', 'redis-server.{port}.pid'.format(port=port),
-            '--unixsocket', self.unixsocket,
-            '--dbfilename', 'dump.{port}.rdb'.format(port=port),
-            '--logfile', logfile_path,
-            '--loglevel', loglevel,
-            '--syslog-enabled', self._redis_bool(syslog_enabled),
-            '--port', str(port),
-            '--dir', gettempdir()
+            "--daemonize",
+            daemonize,
+            "--rdbcompression",
+            self._redis_bool(rdbcompression),
+            "--rdbchecksum",
+            self._redis_bool(rdbchecksum),
+            "--appendonly",
+            appendonly,
+            "--databases",
+            str(databases),
+            "--timeout",
+            str(redis_timeout),
+            "--pidfile",
+            "redis-server.{port}.pid".format(port=port),
+            "--unixsocket",
+            self.unixsocket,
+            "--dbfilename",
+            "dump.{port}.rdb".format(port=port),
+            "--logfile",
+            logfile_path,
+            "--loglevel",
+            loglevel,
+            "--syslog-enabled",
+            self._redis_bool(syslog_enabled),
+            "--port",
+            str(port),
+            "--dir",
+            gettempdir(),
         ]
         if save:
             save_parts = save.split()
-            assert all((part.isdigit() for part in save_parts)), \
-                "all save arguments should be numbers"
-            assert len(save_parts) % 2 == 0, \
-                "there should be even number of elements passed to save"
-            for time, change in zip(
-                    islice(save_parts, 0, None, 2),
-                    islice(save_parts, 1, None, 2)):
-                command.extend(['--save {0} {1}'.format(time, change)])
+            assert all(
+                (part.isdigit() for part in save_parts)
+            ), "all save arguments should be numbers"
+            assert (
+                len(save_parts) % 2 == 0
+            ), "there should be even number of elements passed to save"
+            for time, change in zip(islice(save_parts, 0, None, 2), islice(save_parts, 1, None, 2)):
+                command.extend(["--save {0} {1}".format(time, change)])
 
-        super().__init__(
-            command, host, port, timeout=timeout
-        )
+        super().__init__(command, host, port, timeout=timeout)
 
     @classmethod
     def _redis_bool(cls, value):
@@ -162,7 +184,7 @@ class RedisExecutor(TCPExecutor):
         :returns: yes for True, no for False
         :rtype: str
         """
-        return 'yes' if value and value != 'no' else 'no'
+        return "yes" if value and value != "no" else "no"
 
     def start(self):
         """Check supported version before starting."""
@@ -171,23 +193,21 @@ class RedisExecutor(TCPExecutor):
 
     def _check_version(self):
         """Check redises version if it's compatible."""
-        with os.popen(
-                '{0} --version'.format(self.executable)
-        ) as version_output:
+        with os.popen("{0} --version".format(self.executable)) as version_output:
             version_string = version_output.read()
         if not version_string:
             raise RedisMisconfigured(
-                'Bad path to redis_exec is given:'
-                ' {0} not exists or wrong program'.format(
-                    self.executable
-                )
+                "Bad path to redis_exec is given:"
+                " {0} not exists or wrong program".format(self.executable)
             )
 
         redis_version = extract_version(version_string)
         cv_result = compare_version(redis_version, self.MIN_SUPPORTED_VERSION)
         if redis_version and cv_result < 0:
             raise RedisUnsupported(
-                'Your version of Redis is not supported. '
-                'Consider updating to Redis {0} at least. '
-                'The currently installed version of Redis: {1}.'
-                .format(self.MIN_SUPPORTED_VERSION, redis_version))
+                "Your version of Redis is not supported. "
+                "Consider updating to Redis {0} at least. "
+                "The currently installed version of Redis: {1}.".format(
+                    self.MIN_SUPPORTED_VERSION, redis_version
+                )
+            )

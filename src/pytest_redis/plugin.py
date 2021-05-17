@@ -23,8 +23,8 @@ from pytest_redis import factories
 
 # pylint:disable=invalid-name
 _help_exec = "Redis server executable"
-_help_host = 'Host at which Redis will accept connections'
-_help_port = 'Port at which Redis will accept connections'
+_help_host = "Host at which Redis will accept connections"
+_help_port = "Port at which Redis will accept connections"
 _help_logsdir = "Logs directory location"
 _help_timeout = "Client's connection timeout in seconds"
 _help_loglevel = "Redis log verbosity level"
@@ -34,151 +34,86 @@ _help_rdbchecksum = "Whether to add checksum to the rdb files"
 _help_syslog = "Whether to enable logging to the system logger"
 _help_save = "Redis persistance frequency configuration - seconds keys"
 _help_decode = (
-    "Client: to decode response or not. "
-    "See redis.StrictRedis decode_reponse client parameter."
+    "Client: to decode response or not. " "See redis.StrictRedis decode_reponse client parameter."
 )
 
 
 def pytest_addoption(parser):
     """Define configuration options."""
+    parser.addini(name="redis_exec", help=_help_exec, default="/usr/bin/redis-server")
+    parser.addini(name="redis_host", help=_help_host, default="127.0.0.1")
     parser.addini(
-        name='redis_exec',
-        help=_help_exec,
-        default='/usr/bin/redis-server'
-    )
-    parser.addini(
-        name='redis_host',
-        help=_help_host,
-        default='127.0.0.1'
-    )
-    parser.addini(
-        name='redis_port',
+        name="redis_port",
         help=_help_port,
         default=None,
     )
     parser.addini(
-        name='redis_logsdir',
+        name="redis_logsdir",
         help=_help_logsdir,
         default=gettempdir(),
     )
     parser.addini(
-        name='redis_timeout',
+        name="redis_timeout",
         help=_help_timeout,
         default=30,
     )
     parser.addini(
-        name='redis_loglevel',
+        name="redis_loglevel",
         help=_help_loglevel,
-        default='notice',
+        default="notice",
     )
     parser.addini(
-        name='redis_db_count',
+        name="redis_db_count",
         help=_help_db_count,
         default=8,
     )
     parser.addini(
-        name='redis_save',
+        name="redis_save",
         help=_help_save,
         default=None,
     )
-    parser.addini(
-        name='redis_compression',
-        type='bool',
-        help=_help_compress
-    )
-    parser.addini(
-        name='redis_rdbchecksum',
-        type='bool',
-        help=_help_rdbchecksum
-    )
-    parser.addini(
-        name='redis_syslog',
-        type='bool',
-        help=_help_syslog
-    )
-    parser.addini(
-        name='redis_decode',
-        type='bool',
-        help=_help_decode,
-        default=False
-    )
+    parser.addini(name="redis_compression", type="bool", help=_help_compress)
+    parser.addini(name="redis_rdbchecksum", type="bool", help=_help_rdbchecksum)
+    parser.addini(name="redis_syslog", type="bool", help=_help_syslog)
+    parser.addini(name="redis_decode", type="bool", help=_help_decode, default=False)
 
     parser.addoption(
-        '--redis-exec',
-        action='store',
-        dest='redis_exec',
+        "--redis-exec",
+        action="store",
+        dest="redis_exec",
         help=_help_exec,
     )
     parser.addoption(
-        '--redis-host',
-        action='store',
-        dest='redis_host',
+        "--redis-host",
+        action="store",
+        dest="redis_host",
         help=_help_host,
     )
+    parser.addoption("--redis-port", action="store", dest="redis_port", help=_help_port)
     parser.addoption(
-        '--redis-port',
-        action='store',
-        dest='redis_port',
-        help=_help_port
-    )
-    parser.addoption(
-        '--redis-logsdir',
-        action='store',
-        metavar='path',
+        "--redis-logsdir",
+        action="store",
+        metavar="path",
         help=_help_logsdir,
-        dest='redis_logsdir',
+        dest="redis_logsdir",
+    )
+    parser.addoption("--redis-timeout", action="store", dest="redis_timeout", help=_help_timeout)
+    parser.addoption("--redis-loglevel", action="store", dest="redis_loglevel", help=_help_loglevel)
+    parser.addoption("--redis-db-count", action="store", dest="redis_db_count", help=_help_db_count)
+    parser.addoption("--redis-save", action="store", dest="redis_save", help=_help_save)
+    parser.addoption(
+        "--redis-compression", action="store_true", dest="redis_compression", help=_help_compress
     )
     parser.addoption(
-        '--redis-timeout',
-        action='store',
-        dest='redis_timeout',
-        help=_help_timeout
+        "--redis-rdbchecksum", action="store_true", dest="redis_rdbchecksum", help=_help_rdbchecksum
     )
+    parser.addoption("--redis-syslog", action="store_true", dest="redis_syslog", help=_help_syslog)
     parser.addoption(
-        '--redis-loglevel',
-        action='store',
-        dest='redis_loglevel',
-        help=_help_loglevel
-    )
-    parser.addoption(
-        '--redis-db-count',
-        action='store',
-        dest='redis_db_count',
-        help=_help_db_count
-    )
-    parser.addoption(
-        '--redis-save',
-        action='store',
-        dest='redis_save',
-        help=_help_save
-    )
-    parser.addoption(
-        '--redis-compression',
-        action="store_true",
-        dest='redis_compression',
-        help=_help_compress
-    )
-    parser.addoption(
-        '--redis-rdbchecksum',
-        action="store_true",
-        dest='redis_rdbchecksum',
-        help=_help_rdbchecksum
-    )
-    parser.addoption(
-        '--redis-syslog',
-        action="store_true",
-        dest='redis_syslog',
-        help=_help_syslog
-    )
-    parser.addoption(
-        '--redis-client-decode',
-        action="store_true",
-        dest='redis_decode',
-        help=_help_decode
+        "--redis-client-decode", action="store_true", dest="redis_decode", help=_help_decode
     )
 
 
 redis_proc = factories.redis_proc()
 redis_nooproc = factories.redis_noproc()
-redisdb = factories.redisdb('redis_proc')
+redisdb = factories.redisdb("redis_proc")
 # pylint:enable=invalid-name

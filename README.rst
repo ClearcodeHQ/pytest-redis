@@ -21,17 +21,6 @@ pytest-redis
     :target: https://pypi.python.org/pypi/pytest-redis/
     :alt: License
 
-Package status
---------------
-
-.. image:: https://travis-ci.org/ClearcodeHQ/pytest-redis.svg?branch=v2.0.0
-    :target: https://travis-ci.org/ClearcodeHQ/pytest-redis
-    :alt: Tests
-
-.. image:: https://coveralls.io/repos/ClearcodeHQ/pytest-redis/badge.svg?branch=v2.0.0
-    :target: https://coveralls.io/r/ClearcodeHQ/pytest-redis?branch=v2.0.0
-    :alt: Coverage Status
-
 What is this?
 =============
 
