@@ -10,6 +10,7 @@ Features
 - Rely on tmpdir_factory for handling tmpdirs. Now it's cleanup should
   be handled better without much of the leftovers dangling indefinitely
   in the tmp directory.
+- Store pidfile in fixture's temporary directory
 
 Backward incompatibilities
 ++++++++++++++++++++++++++
