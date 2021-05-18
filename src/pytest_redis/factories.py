@@ -18,6 +18,8 @@
 """FIxture factories for pytest-redis."""
 import pytest
 import redis
+from _pytest.fixtures import FixtureRequest
+from _pytest.tmpdir import TempdirFactory
 
 from pytest_redis.executor import RedisExecutor, NoopRedis
 from pytest_redis.port import get_port
@@ -27,7 +29,6 @@ def get_config(request):
     """Return a dictionary with config options."""
     config = {}
     options = [
-        "logsdir",
         "host",
         "port",
         "exec",
@@ -57,8 +58,6 @@ def redis_proc(
     compression=None,
     checksum=None,
     syslog=None,
-    logsdir=None,
-    logs_prefix="",
     loglevel=None,
 ):
     """
@@ -78,8 +77,6 @@ def redis_proc(
     :param bool compression: Compress redis dump files
     :param bool checksum: Whether to add checksum to the rdb files
     :param bool syslog:Whether to enable logging to the system logger
-    :param str logsdir: path to log directory
-    :param str logs_prefix: prefix for log filename
     :param str loglevel: redis log verbosity level.
         One of debug, verbose, notice or warning
     :rtype: func
@@ -87,7 +84,7 @@ def redis_proc(
     """
 
     @pytest.fixture(scope="session")
-    def redis_proc_fixture(request):
+    def redis_proc_fixture(request: FixtureRequest, tmpdir_factory: TempdirFactory):
         """
         Fixture for pytest-redis.
 
@@ -95,7 +92,8 @@ def redis_proc(
         #. Run redis process.
         #. Stop redis process after tests.
 
-        :param FixtureRequest request: fixture request object
+        :param request: fixture request object
+        :param tmpdir_factory:
         :rtype: pytest_redis.executors.TCPExecutor
         :returns: tcp executor
         """
@@ -104,13 +102,13 @@ def redis_proc(
         rdbcompression = config["compression"] if compression is None else compression
         rdbchecksum = config["rdbchecksum"] if checksum is None else checksum
 
+        tmpdir = tmpdir_factory.mktemp(f"pytest-redis-{request.fixturename}")
+
         redis_executor = RedisExecutor(
             executable=redis_exec,
             databases=db_count or config["db_count"],
             redis_timeout=timeout or config["timeout"],
             loglevel=loglevel or config["loglevel"],
-            logsdir=logsdir or config["logsdir"],
-            logs_prefix=logs_prefix,
             rdbcompression=rdbcompression,
             rdbchecksum=rdbchecksum,
             syslog_enabled=syslog or config["syslog"],
@@ -118,6 +116,7 @@ def redis_proc(
             host=host or config["host"],
             port=get_port(port) or get_port(config["port"]),
             timeout=60,
+            datadir=tmpdir,
         )
         redis_executor.start()
         request.addfinalizer(redis_executor.stop)

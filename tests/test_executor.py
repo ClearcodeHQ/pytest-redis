@@ -3,6 +3,8 @@ from io import StringIO
 
 import pytest
 import redis
+from _pytest.fixtures import FixtureRequest
+from _pytest.tmpdir import TempdirFactory
 from mock import mock
 
 from pytest_redis.executor import (
@@ -27,7 +29,9 @@ from pytest_redis.port import get_port
         ({"rdbchecksum": False}, "rdbchecksum", "no"),
     ),
 )
-def test_redis_exec_configuration(request, parameter, config_option, value):
+def test_redis_exec_configuration(
+    request: FixtureRequest, tmpdir_factory: TempdirFactory, parameter, config_option, value
+):
     """
     Check if RedisExecutor properly processes configuration options.
 
@@ -35,15 +39,16 @@ def test_redis_exec_configuration(request, parameter, config_option, value):
     and we won't be able to read it out of redis.
     """
     config = get_config(request)
+    tmpdir = tmpdir_factory.mktemp(f"pytest-redis-test-test_redis_exec_configuration")
     redis_exec = RedisExecutor(
         executable=config["exec"],
         databases=4,
         redis_timeout=config["timeout"],
         loglevel=config["loglevel"],
-        logsdir=config["logsdir"],
         port=get_port(None),
         host=config["host"],
         timeout=30,
+        datadir=tmpdir,
         **parameter,
     )
     with redis_exec:
@@ -58,22 +63,23 @@ def test_redis_exec_configuration(request, parameter, config_option, value):
         {"syslog_enabled": False},
     ),
 )
-def test_redis_exec(request, parameter):
+def test_redis_exec(request: FixtureRequest, tmpdir_factory: TempdirFactory, parameter):
     """
     Check if RedisExecutor properly starts with these configuration options.
 
     Incorrect options won't even start redis.
     """
     config = get_config(request)
+    tmpdir = tmpdir_factory.mktemp(f"pytest-redis-test-test_redis_exec")
     redis_exec = RedisExecutor(
         executable=config["exec"],
         databases=4,
         redis_timeout=config["timeout"],
         loglevel=config["loglevel"],
-        logsdir=config["logsdir"],
         port=get_port(None),
         host=config["host"],
         timeout=30,
+        datadir=tmpdir,
         **parameter,
     )
     with redis_exec:
@@ -109,9 +115,10 @@ def test_convert_bool(value, redis_value):
         "Redis server version 2.3.10 (e9933407:0)",
     ),
 )
-def test_old_redis_version(request, version):
+def test_old_redis_version(request: FixtureRequest, tmpdir_factory: TempdirFactory, version):
     """Test how fixture behaves in case of old redis version."""
     config = get_config(request)
+    tmpdir = tmpdir_factory.mktemp(f"pytest-redis-test-test_old_redis_version")
     with mock.patch("os.popen", lambda *args: StringIO(version)):
         with pytest.raises(RedisUnsupported):
             RedisExecutor(
@@ -119,26 +126,27 @@ def test_old_redis_version(request, version):
                 databases=4,
                 redis_timeout=config["timeout"],
                 loglevel=config["loglevel"],
-                logsdir=config["logsdir"],
                 port=get_port(None),
                 host=config["host"],
                 timeout=30,
+                datadir=tmpdir,
             ).start()
 
 
-def test_not_existing_redis(request):
+def test_not_existing_redis(request: FixtureRequest, tmpdir_factory: TempdirFactory):
     """Check handling of misconfigured redis executable path."""
     config = get_config(request)
+    tmpdir = tmpdir_factory.mktemp(f"pytest-redis-test-test_not_existing_redis")
     with pytest.raises(RedisMisconfigured):
         RedisExecutor(
             "/not/redis/here/redis-server",
             databases=4,
             redis_timeout=config["timeout"],
             loglevel=config["loglevel"],
-            logsdir=config["logsdir"],
             port=get_port(None),
             host=config["host"],
             timeout=30,
+            datadir=tmpdir,
         ).start()
 
 

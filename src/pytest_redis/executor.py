@@ -20,9 +20,12 @@ import os
 import re
 from collections import namedtuple
 from itertools import islice
+from pathlib import Path
 from tempfile import gettempdir
+from typing import Union
 
 from mirakuru import TCPExecutor
+from py.path import local
 
 
 def compare_version(version1, version2):
@@ -92,17 +95,16 @@ class RedisExecutor(TCPExecutor):
         databases,
         redis_timeout,
         loglevel,
-        logsdir,
         host,
         port,
         timeout=60,
-        logs_prefix="",
         save="",
         daemonize="no",
         rdbcompression=True,
         rdbchecksum=False,
         syslog_enabled=False,
         appendonly="no",
+        datadir: Union[local, Path] = None,
     ):  # pylint:disable=too-many-locals
         """
         Init method of a RedisExecutor.
@@ -111,7 +113,6 @@ class RedisExecutor(TCPExecutor):
         :param int databases: number of databases
         :param int redis_timeout: client's connection timeout
         :param str loglevel: redis log verbosity level
-        :param str logdir: path to log directory
         :param str host: server's host
         :param int port: server's port
         :param int timeout: executor's timeout for start and stop actions
@@ -122,14 +123,15 @@ class RedisExecutor(TCPExecutor):
         :param bool rdbchecksum: Whether to add checksum to the rdb files
         :param bool syslog_enabled: Whether to enable logging
             to the system logger
+        :param datadir: location where all the process files will be located
         :param str appendonly:
         """
-        self.unixsocket = gettempdir() + "/redis.{port}.sock".format(port=port)
+        if not datadir:
+            datadir = Path(gettempdir())
+        self.unixsocket = str(datadir + "/redis.{port}.sock".format(port=port))
         self.executable = executable
 
-        logfile_path = os.path.join(
-            logsdir, "{prefix}redis-server.{port}.log".format(prefix=logs_prefix, port=port)
-        )
+        logfile_path = datadir / "redis-server.{port}.log".format(port=port)
 
         command = [
             self.executable,
@@ -152,7 +154,7 @@ class RedisExecutor(TCPExecutor):
             "--dbfilename",
             "dump.{port}.rdb".format(port=port),
             "--logfile",
-            logfile_path,
+            str(logfile_path),
             "--loglevel",
             loglevel,
             "--syslog-enabled",
@@ -160,7 +162,7 @@ class RedisExecutor(TCPExecutor):
             "--port",
             str(port),
             "--dir",
-            gettempdir(),
+            str(datadir),
         ]
         if save:
             save_parts = save.split()
