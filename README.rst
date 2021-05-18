@@ -71,7 +71,7 @@ You can also create additional redis client and process fixtures if you'd need t
 
     from pytest_redis import factories
 
-    redis_my_proc = factories.redis_proc(port=None, logsdir='/tmp')
+    redis_my_proc = factories.redis_proc(port=None)
     redis_my = factories.redisdb('redis_my_proc')
 
     def test_my_redis(redis_my):
@@ -171,12 +171,6 @@ You can pick which you prefer, but remember that these settings are handled in t
      - redis_syslog
      - -
      - False
-   * - Log directory location
-     - logsdir
-     - --redis-logsdir
-     - redis_logsdir
-     - -
-     - $TMPDIR
    * - Redis log verbosity level
      - loglevel
      - --redis-loglevel

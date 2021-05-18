@@ -1,6 +1,24 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+Features
+++++++++
+
+- Rely on tmpdir_factory for handling tmpdirs. Now it's cleanup should
+  be handled better without much of the leftovers dangling indefinitely
+  in the tmp directory.
+
+Backward incompatibilities
+++++++++++++++++++++++++++
+
+- Dropped `--redis-logsdir` command line option, `redis_logsdir` ini file
+  configuration option and `logsdir` fixture factory configuration option.
+  Logs will be automatically placed in fixture's temporary directory.
+- Dropped `logs_prefix` argument from fixture factory argument
+
 2.0.0
 -------
 
