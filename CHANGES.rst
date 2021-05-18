@@ -11,6 +11,7 @@ Features
   be handled better without much of the leftovers dangling indefinitely
   in the tmp directory.
 - Store pidfile in fixture's temporary directory
+- Support only python 3.7 and up
 
 Backward incompatibilities
 ++++++++++++++++++++++++++

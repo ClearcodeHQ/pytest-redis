@@ -128,11 +128,11 @@ class RedisExecutor(TCPExecutor):
         """
         if not datadir:
             datadir = Path(gettempdir())
-        self.unixsocket = str(datadir + "/redis.{port}.sock".format(port=port))
+        self.unixsocket = str(datadir + f"/redis.{port}.sock")
         self.executable = executable
 
-        logfile_path = datadir / "redis-server.{port}.log".format(port=port)
-        pidfile_path = datadir / "redis-server.{port}.pid".format(port=port)
+        logfile_path = datadir / f"redis-server.{port}.log"
+        pidfile_path = datadir / f"redis-server.{port}.pid"
 
         command = [
             self.executable,
@@ -153,7 +153,7 @@ class RedisExecutor(TCPExecutor):
             "--unixsocket",
             self.unixsocket,
             "--dbfilename",
-            "dump.{port}.rdb".format(port=port),
+            f"dump.{port}.rdb",
             "--logfile",
             str(logfile_path),
             "--loglevel",
@@ -174,7 +174,7 @@ class RedisExecutor(TCPExecutor):
                 len(save_parts) % 2 == 0
             ), "there should be even number of elements passed to save"
             for time, change in zip(islice(save_parts, 0, None, 2), islice(save_parts, 1, None, 2)):
-                command.extend(["--save {0} {1}".format(time, change)])
+                command.extend([f"--save {time} {change}"])
 
         super().__init__(command, host, port, timeout=timeout)
 
@@ -196,21 +196,19 @@ class RedisExecutor(TCPExecutor):
 
     def _check_version(self):
         """Check redises version if it's compatible."""
-        with os.popen("{0} --version".format(self.executable)) as version_output:
+        with os.popen(f"{self.executable} --version") as version_output:
             version_string = version_output.read()
         if not version_string:
             raise RedisMisconfigured(
-                "Bad path to redis_exec is given:"
-                " {0} not exists or wrong program".format(self.executable)
+                f"Bad path to redis_exec is given:"
+                f" {self.executable} not exists or wrong program"
             )
 
         redis_version = extract_version(version_string)
         cv_result = compare_version(redis_version, self.MIN_SUPPORTED_VERSION)
         if redis_version and cv_result < 0:
             raise RedisUnsupported(
-                "Your version of Redis is not supported. "
-                "Consider updating to Redis {0} at least. "
-                "The currently installed version of Redis: {1}.".format(
-                    self.MIN_SUPPORTED_VERSION, redis_version
-                )
+                f"Your version of Redis is not supported. "
+                f"Consider updating to Redis {self.MIN_SUPPORTED_VERSION} at least. "
+                f"The currently installed version of Redis: {redis_version}."
             )
