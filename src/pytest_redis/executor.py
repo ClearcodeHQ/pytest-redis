@@ -132,6 +132,7 @@ class RedisExecutor(TCPExecutor):
         self.executable = executable
 
         logfile_path = datadir / "redis-server.{port}.log".format(port=port)
+        pidfile_path = datadir / "redis-server.{port}.pid".format(port=port)
 
         command = [
             self.executable,
@@ -148,7 +149,7 @@ class RedisExecutor(TCPExecutor):
             "--timeout",
             str(redis_timeout),
             "--pidfile",
-            "redis-server.{port}.pid".format(port=port),
+            str(pidfile_path),
             "--unixsocket",
             self.unixsocket,
             "--dbfilename",
