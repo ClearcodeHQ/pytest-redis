@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+Misc
+++++
+
+- Rise more informative error when the unixsocket is too long. Now the error
+  will hint at solution how to overcome it. This might be issue especially on
+  MacOS, where the default temp folder is already a long path
+
 2.1.0
 ----------
 

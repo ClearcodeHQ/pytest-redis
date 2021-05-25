@@ -13,6 +13,7 @@ from pytest_redis.executor import (
     compare_version,
     extract_version,
     RedisUnsupported,
+    UnixSocketTooLong,
 )
 from pytest_redis.factories import get_config
 from pytest_redis.port import get_port
@@ -140,6 +141,23 @@ def test_not_existing_redis(request: FixtureRequest, tmpdir_factory: TempdirFact
     with pytest.raises(RedisMisconfigured):
         RedisExecutor(
             "/not/redis/here/redis-server",
+            databases=4,
+            redis_timeout=config["timeout"],
+            loglevel=config["loglevel"],
+            port=get_port(None),
+            host=config["host"],
+            timeout=30,
+            datadir=tmpdir,
+        ).start()
+
+
+def test_too_long_unixsocket(request: FixtureRequest, tmpdir_factory: TempdirFactory):
+    """Check handling of misconfigured redis executable path."""
+    config = get_config(request)
+    tmpdir = tmpdir_factory.mktemp(f"x" * 110)
+    with pytest.raises(UnixSocketTooLong):
+        RedisExecutor(
+            config["exec"],
             databases=4,
             redis_timeout=config["timeout"],
             loglevel=config["loglevel"],
