@@ -17,6 +17,7 @@
 # along with pytest-redis.  If not, see <http://www.gnu.org/licenses/>.
 """Redis executor."""
 import os
+import platform
 import re
 from collections import namedtuple
 from itertools import islice
@@ -26,6 +27,10 @@ from typing import Union
 
 from mirakuru import TCPExecutor
 from py.path import local
+
+MAX_UNIXSOCKET = 104
+if platform.system() == "Linux":
+    MAX_UNIXSOCKET = 107
 
 
 def compare_version(version1, version2):
@@ -71,6 +76,10 @@ class RedisUnsupported(Exception):
 
 class RedisMisconfigured(Exception):
     """Exception raised when the redis_exec points to non existing file."""
+
+
+class UnixSocketTooLong(Exception):
+    """Exception raised when unixsocket path is too long."""
 
 
 NoopRedis = namedtuple("NoopRedis", "host, port, unixsocket")
@@ -191,8 +200,22 @@ class RedisExecutor(TCPExecutor):
 
     def start(self):
         """Check supported version before starting."""
+        self._check_unixsocket_length()
         self._check_version()
         return super().start()
+
+    def _check_unixsocket_length(self):
+        """Check unixsocket length."""
+        if len(self.unixsocket) > MAX_UNIXSOCKET:
+            raise UnixSocketTooLong(
+                f"Unix Socket path is longer than {MAX_UNIXSOCKET} "
+                f"allowed on your system: {self.unixsocket}. "
+                f"It's probably due to the temporary directory configuration. "
+                f"You can configure that for python by changing TMPDIR envvar, "
+                f"add for example `--basetemp=/tmp/pytest` to your pytest "
+                f"command or add `addopts = --basetemp=/tmp/pytest` to your "
+                f"pytest configuration file."
+            )
 
     def _check_version(self):
         """Check redises version if it's compatible."""
