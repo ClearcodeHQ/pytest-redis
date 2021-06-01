@@ -20,6 +20,4 @@
 from setuptools import setup
 
 
-setup(
-    entry_points={"pytest11": ["pytest_redis = pytest_redis.plugin"]},
-)
+setup()
