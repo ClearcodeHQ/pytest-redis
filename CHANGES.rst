@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+Misc
+++++
+
+- rely on `get_port` functionality delivered by `port_for`
+
+
 2.1.1
 ----------
 
