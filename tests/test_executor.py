@@ -6,6 +6,7 @@ import redis
 from _pytest.fixtures import FixtureRequest
 from _pytest.tmpdir import TempdirFactory
 from mock import mock
+from port_for import get_port
 
 from pytest_redis.executor import (
     RedisExecutor,
@@ -16,7 +17,6 @@ from pytest_redis.executor import (
     UnixSocketTooLong,
 )
 from pytest_redis.factories import get_config
-from pytest_redis.port import get_port
 
 
 @pytest.mark.parametrize(

@@ -20,9 +20,9 @@ import pytest
 import redis
 from _pytest.fixtures import FixtureRequest
 from _pytest.tmpdir import TempdirFactory
+from port_for import get_port
 
 from pytest_redis.executor import RedisExecutor, NoopRedis
-from pytest_redis.port import get_port
 
 
 def get_config(request):
