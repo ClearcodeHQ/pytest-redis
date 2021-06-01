@@ -45,7 +45,6 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
-        files: ./coverage.xml, ./coverage-xdist.xml
         flags: linux
         env_vars: OS, PYTHON
         fail_ci_if_error: true
