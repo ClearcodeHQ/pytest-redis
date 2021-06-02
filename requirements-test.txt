@@ -2,7 +2,7 @@
 mirakuru==2.4.1
 port-for==0.6.1
 pytest==6.2.4
-pytest-cov==2.12.0
+pytest-cov==2.12.1
 coverage==5.5 # pytest-cov
 pytest-xdist==2.2.1
 Mock==4.0.3
