@@ -1,6 +1,6 @@
 # test runs requirements (versions we'll be testing against) - automatically updated by requires.io
 mirakuru==2.4.1
-port-for==0.6.0
+port-for==0.6.1
 pytest==6.2.4
 pytest-cov==2.12.0
 coverage==5.5 # pytest-cov
