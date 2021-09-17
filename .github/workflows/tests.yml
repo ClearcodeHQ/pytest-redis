@@ -43,7 +43,7 @@ jobs:
       run: |
         pytest -n 1 --cov-report=xml:coverage-xdist.xml
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2.1.0
       with:
         flags: linux
         env_vars: OS, PYTHON
