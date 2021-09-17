@@ -2,13 +2,13 @@ name: Run tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - '**.py'
       - .github/workflows/tests.yml
       - requirements-test.txt
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   tests:

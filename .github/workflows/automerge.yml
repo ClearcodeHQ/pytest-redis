@@ -6,6 +6,7 @@ on:
       - completed
     workflows:
       # List all required workflow names here.
+      - 'Run linters'
       - 'Run tests'
       - 'Test build package'
 
