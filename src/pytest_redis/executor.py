@@ -169,6 +169,8 @@ class RedisExecutor(TCPExecutor):
             loglevel,
             "--syslog-enabled",
             self._redis_bool(syslog_enabled),
+            "--bind",
+            str(host),
             "--port",
             str(port),
             "--dir",
