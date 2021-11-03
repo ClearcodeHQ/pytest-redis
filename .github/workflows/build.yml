@@ -8,19 +8,4 @@ on:
 
 jobs:
   build:
-    name: Build Python 🐍 distributions 📦
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.10"
-      - name: Install build tools
-        run: pip install build
-      - name: Build a wheel package
-        run: python -m build .
-      - name: Install twine to check the package
-        run: pip install twine
-      - name: Check the package
-        run: twine check dist/*
+    uses: fizyk/actions-reuse/.github/workflows/pypi.yml@v1.1.1
