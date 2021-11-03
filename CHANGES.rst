@@ -4,6 +4,11 @@ CHANGELOG
 unreleased
 ----------
 
+Feature
+-------
+
+- Configure redis to listen on specific hostname exclusively using `--bind` parameter.
+
 Misc
 ++++
 
