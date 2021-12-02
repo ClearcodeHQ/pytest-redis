@@ -42,6 +42,7 @@ def get_config(request):
         "rdbchecksum",
         "syslog",
         "decode",
+        "datadir",
     ]
     for option in options:
         option_name = "redis_" + option
@@ -61,7 +62,7 @@ def redis_proc(
     checksum=None,
     syslog=None,
     loglevel=None,
-    datadir="/tmp",
+    datadir=None,
 ):
     """
     Fixture factory for pytest-redis.
@@ -83,8 +84,8 @@ def redis_proc(
     :param str loglevel: redis log verbosity level.
         One of debug, verbose, notice or warning
     :param str datadir: Path for redis data files, including the unix domain socket.
-        Defaults to /tmp. If this is set to None, then a temporary directory is created
-        and used instead.
+        If this is not configured, then a temporary directory is created and used
+        instead.
     :rtype: func
     :returns: function which makes a redis process
     """
@@ -108,11 +109,12 @@ def redis_proc(
         rdbcompression = config["compression"] if compression is None else compression
         rdbchecksum = config["rdbchecksum"] if checksum is None else checksum
 
-        redis_datadir = (
-            Path(datadir)
-            if datadir
-            else tmpdir_factory.mktemp(f"pytest-redis-{request.fixturename}")
-        )
+        if datadir:
+            redis_datadir = Path(datadir)
+        elif config["datadir"]:
+            redis_datadir = Path(config["datadir"])
+        else:
+            redis_datadir = tmpdir_factory.mktemp(f"pytest-redis-{request.fixturename}")
 
         redis_executor = RedisExecutor(
             executable=redis_exec,

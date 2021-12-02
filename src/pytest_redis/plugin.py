@@ -35,6 +35,7 @@ _help_save = "Redis persistance frequency configuration - seconds keys"
 _help_decode = (
     "Client: to decode response or not. " "See redis.StrictRedis decode_reponse client parameter."
 )
+_help_datadir = "Directory where test Redis instance data files will be stored"
 
 
 def pytest_addoption(parser):
@@ -70,6 +71,7 @@ def pytest_addoption(parser):
     parser.addini(name="redis_rdbchecksum", type="bool", help=_help_rdbchecksum)
     parser.addini(name="redis_syslog", type="bool", help=_help_syslog)
     parser.addini(name="redis_decode", type="bool", help=_help_decode, default=False)
+    parser.addini(name="redis_datadir", help=_help_datadir, default=None)
 
     parser.addoption(
         "--redis-exec",
@@ -98,6 +100,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--redis-client-decode", action="store_true", dest="redis_decode", help=_help_decode
     )
+    parser.addoption("--redis-datadir", action="store", dest="redis_datadir", help=_help_datadir)
 
 
 redis_proc = factories.redis_proc()
