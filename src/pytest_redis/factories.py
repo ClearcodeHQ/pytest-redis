@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with pytest-redis.  If not, see <http://www.gnu.org/licenses/>.
 """FIxture factories for pytest-redis."""
+from pathlib import Path
+
 import pytest
 import redis
 from _pytest.fixtures import FixtureRequest
@@ -40,6 +42,7 @@ def get_config(request):
         "rdbchecksum",
         "syslog",
         "decode",
+        "datadir",
     ]
     for option in options:
         option_name = "redis_" + option
@@ -59,6 +62,7 @@ def redis_proc(
     checksum=None,
     syslog=None,
     loglevel=None,
+    datadir=None,
 ):
     """
     Fixture factory for pytest-redis.
@@ -79,6 +83,9 @@ def redis_proc(
     :param bool syslog:Whether to enable logging to the system logger
     :param str loglevel: redis log verbosity level.
         One of debug, verbose, notice or warning
+    :param str datadir: Path for redis data files, including the unix domain socket.
+        If this is not configured, then a temporary directory is created and used
+        instead.
     :rtype: func
     :returns: function which makes a redis process
     """
@@ -102,7 +109,12 @@ def redis_proc(
         rdbcompression = config["compression"] if compression is None else compression
         rdbchecksum = config["rdbchecksum"] if checksum is None else checksum
 
-        tmpdir = tmpdir_factory.mktemp(f"pytest-redis-{request.fixturename}")
+        if datadir:
+            redis_datadir = Path(datadir)
+        elif config["datadir"]:
+            redis_datadir = Path(config["datadir"])
+        else:
+            redis_datadir = tmpdir_factory.mktemp(f"pytest-redis-{request.fixturename}")
 
         redis_executor = RedisExecutor(
             executable=redis_exec,
@@ -116,7 +128,7 @@ def redis_proc(
             host=host or config["host"],
             port=get_port(port) or get_port(config["port"]),
             timeout=60,
-            datadir=tmpdir,
+            datadir=redis_datadir,
         )
         redis_executor.start()
         request.addfinalizer(redis_executor.stop)

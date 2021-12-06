@@ -137,7 +137,7 @@ class RedisExecutor(TCPExecutor):
         """
         if not datadir:
             datadir = Path(gettempdir())
-        self.unixsocket = str(datadir + f"/redis.{port}.sock")
+        self.unixsocket = str(datadir / f"redis.{port}.sock")
         self.executable = executable
 
         logfile_path = datadir / f"redis-server.{port}.log"

@@ -1,7 +1,7 @@
 .. image:: https://raw.githubusercontent.com/ClearcodeHQ/pytest-redis/master/logo.png
     :width: 100px
     :height: 100px
-    
+
 pytest-redis
 ============
 
@@ -195,6 +195,12 @@ You can pick which you prefer, but remember that these settings are handled in t
      - redis_save
      - -
      - ""
+   * - Redis test instance data directory path
+     - datadir
+     - --redis-datadir
+     - redis_datadir
+     - -
+     - ""
 
 Example usage:
 
@@ -232,4 +238,3 @@ Package resources
 -----------------
 
 * Bug tracker: https://github.com/ClearcodeHQ/pytest-redis/issues
-
