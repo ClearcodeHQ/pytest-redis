@@ -1,11 +1,21 @@
 CHANGELOG
 =========
 
+
+unreleased
+----------
+
+Feature
++++++++
+
+- Added datadir configuration that allows to modify the placement of a redis_proc generated files in the specific place.
+  This helps overcome the issue with long tmp paths on macosx separately from the temporary path itself.
+
 2.2.0
 ----------
 
 Feature
--------
++++++++
 
 - Configure redis to listen on specific hostname exclusively using `--bind` parameter.
 
