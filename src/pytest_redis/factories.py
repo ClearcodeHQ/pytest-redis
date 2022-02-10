@@ -15,13 +15,12 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with pytest-redis.  If not, see <http://www.gnu.org/licenses/>.
-"""FIxture factories for pytest-redis."""
+"""Fixture factories for pytest-redis."""
 from pathlib import Path
 
 import pytest
 import redis
-from _pytest.fixtures import FixtureRequest
-from _pytest.tmpdir import TempdirFactory
+from pytest import TempPathFactory, FixtureRequest
 from port_for import get_port
 
 from pytest_redis.executor import RedisExecutor, NoopRedis
@@ -91,7 +90,7 @@ def redis_proc(
     """
 
     @pytest.fixture(scope="session")
-    def redis_proc_fixture(request: FixtureRequest, tmpdir_factory: TempdirFactory):
+    def redis_proc_fixture(request: FixtureRequest, tmp_path_factory: TempPathFactory):
         """
         Fixture for pytest-redis.
 
@@ -114,7 +113,7 @@ def redis_proc(
         elif config["datadir"]:
             redis_datadir = Path(config["datadir"])
         else:
-            redis_datadir = tmpdir_factory.mktemp(f"pytest-redis-{request.fixturename}")
+            redis_datadir = tmp_path_factory.mktemp(f"pytest-redis-{request.fixturename}")
 
         redis_executor = RedisExecutor(
             executable=redis_exec,

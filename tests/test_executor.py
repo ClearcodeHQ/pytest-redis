@@ -3,8 +3,7 @@ from io import StringIO
 
 import pytest
 import redis
-from _pytest.fixtures import FixtureRequest
-from _pytest.tmpdir import TempdirFactory
+from pytest import FixtureRequest, TempPathFactory
 from mock import mock
 from port_for import get_port
 
@@ -31,7 +30,7 @@ from pytest_redis.factories import get_config
     ),
 )
 def test_redis_exec_configuration(
-    request: FixtureRequest, tmpdir_factory: TempdirFactory, parameter, config_option, value
+    request: FixtureRequest, tmp_path_factory: TempPathFactory, parameter, config_option, value
 ):
     """
     Check if RedisExecutor properly processes configuration options.
@@ -40,7 +39,7 @@ def test_redis_exec_configuration(
     and we won't be able to read it out of redis.
     """
     config = get_config(request)
-    tmpdir = tmpdir_factory.mktemp(f"pytest-redis-test-test_redis_exec_configuration")
+    tmpdir = tmp_path_factory.mktemp(f"pytest-redis-test-test_redis_exec_configuration")
     redis_exec = RedisExecutor(
         executable=config["exec"],
         databases=4,
@@ -64,14 +63,14 @@ def test_redis_exec_configuration(
         {"syslog_enabled": False},
     ),
 )
-def test_redis_exec(request: FixtureRequest, tmpdir_factory: TempdirFactory, parameter):
+def test_redis_exec(request: FixtureRequest, tmp_path_factory: TempPathFactory, parameter):
     """
     Check if RedisExecutor properly starts with these configuration options.
 
     Incorrect options won't even start redis.
     """
     config = get_config(request)
-    tmpdir = tmpdir_factory.mktemp(f"pytest-redis-test-test_redis_exec")
+    tmpdir = tmp_path_factory.mktemp(f"pytest-redis-test-test_redis_exec")
     redis_exec = RedisExecutor(
         executable=config["exec"],
         databases=4,
@@ -116,10 +115,10 @@ def test_convert_bool(value, redis_value):
         "Redis server version 2.3.10 (e9933407:0)",
     ),
 )
-def test_old_redis_version(request: FixtureRequest, tmpdir_factory: TempdirFactory, version):
+def test_old_redis_version(request: FixtureRequest, tmp_path_factory: TempPathFactory, version):
     """Test how fixture behaves in case of old redis version."""
     config = get_config(request)
-    tmpdir = tmpdir_factory.mktemp(f"pytest-redis-test-test_old_redis_version")
+    tmpdir = tmp_path_factory.mktemp(f"pytest-redis-test-test_old_redis_version")
     with mock.patch("os.popen", lambda *args: StringIO(version)):
         with pytest.raises(RedisUnsupported):
             RedisExecutor(
@@ -134,10 +133,10 @@ def test_old_redis_version(request: FixtureRequest, tmpdir_factory: TempdirFacto
             ).start()
 
 
-def test_not_existing_redis(request: FixtureRequest, tmpdir_factory: TempdirFactory):
+def test_not_existing_redis(request: FixtureRequest, tmp_path_factory: TempPathFactory):
     """Check handling of misconfigured redis executable path."""
     config = get_config(request)
-    tmpdir = tmpdir_factory.mktemp(f"pytest-redis-test-test_not_existing_redis")
+    tmpdir = tmp_path_factory.mktemp(f"pytest-redis-test-test_not_existing_redis")
     with pytest.raises(RedisMisconfigured):
         RedisExecutor(
             "/not/redis/here/redis-server",
@@ -151,10 +150,10 @@ def test_not_existing_redis(request: FixtureRequest, tmpdir_factory: TempdirFact
         ).start()
 
 
-def test_too_long_unixsocket(request: FixtureRequest, tmpdir_factory: TempdirFactory):
+def test_too_long_unixsocket(request: FixtureRequest, tmp_path_factory: TempPathFactory):
     """Check handling of misconfigured redis executable path."""
     config = get_config(request)
-    tmpdir = tmpdir_factory.mktemp(f"x" * 110)
+    tmpdir = tmp_path_factory.mktemp(f"x" * 110)
     with pytest.raises(UnixSocketTooLong):
         RedisExecutor(
             config["exec"],

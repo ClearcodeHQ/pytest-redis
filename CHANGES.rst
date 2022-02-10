@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+unreleased
+----------
+
+Features
+++++++++
+
+- Import FixtureRequest from pytest, not private _pytest. Require at least pytest 6.2
+- Replace tmpdir_factory with tmp_path_factory
+
 
 2.3.0
 ----------
