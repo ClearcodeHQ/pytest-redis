@@ -23,9 +23,10 @@ from collections import namedtuple
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Union
+from typing import Union, Any
 
 from mirakuru import TCPExecutor
+from pkg_resources import parse_version
 from py.path import local
 
 MAX_UNIXSOCKET = 104
@@ -33,41 +34,15 @@ if platform.system() == "Linux":
     MAX_UNIXSOCKET = 107
 
 
-def compare_version(version1, version2):
-    """
-    Compare two version numbers.
-
-    :param str version1: first version to compare
-    :param str version2: second version to compare
-    :rtype: int
-    :returns: return value is negative if version1 < version2,
-        zero if version1 == version2
-        and strictly positive if version1 > version2
-    """
-
-    def normalize(ver):
-        return [int(x) for x in re.sub(r"(\.0+)*$", "", ver).split(".")]
-
-    def cmp_v(ver1, ver2):
-        return (ver1 > ver2) - (ver1 < ver2)
-
-    return cmp_v(normalize(version1), normalize(version2))
-
-
-def extract_version(text):
+def extract_version(text: str) -> Any:
     """
     Extract version number from the text.
 
-    :param str text: text that contains the version number
-    :rtype: str
-    :returns: version number, e.g., "2.4.14"
+    :param text: text that contains the version number
     """
-    match_object = re.search(r"\d+(?:\.\d+)+", text)
-    if match_object:
-        extracted_version = match_object.group(0)
-    else:
-        extracted_version = None
-    return extracted_version
+    matches = re.search(r"\d+(?:\.\d+)+", text)
+    assert matches is not None
+    return parse_version(matches.group(0))
 
 
 class RedisUnsupported(Exception):
@@ -93,7 +68,7 @@ class RedisExecutor(TCPExecutor):
     and properly constructing command to start redis-server.
     """
 
-    MIN_SUPPORTED_VERSION = "2.6"
+    MIN_SUPPORTED_VERSION = parse_version("2.6")
     """
     Minimum required version of redis that is accepted by pytest-redis.
     """
@@ -177,15 +152,20 @@ class RedisExecutor(TCPExecutor):
             str(datadir),
         ]
         if save:
-            save_parts = save.split()
-            assert all(
-                (part.isdigit() for part in save_parts)
-            ), "all save arguments should be numbers"
-            assert (
-                len(save_parts) % 2 == 0
-            ), "there should be even number of elements passed to save"
-            for time, change in zip(islice(save_parts, 0, None, 2), islice(save_parts, 1, None, 2)):
-                command.extend([f"--save {time} {change}"])
+            if self.version < parse_version("7"):
+                save_parts = save.split()
+                assert all(
+                    (part.isdigit() for part in save_parts)
+                ), "all save arguments should be numbers"
+                assert (
+                    len(save_parts) % 2 == 0
+                ), "there should be even number of elements passed to save"
+                for time, change in zip(
+                    islice(save_parts, 0, None, 2), islice(save_parts, 1, None, 2)
+                ):
+                    command.extend([f"--save {time} {change}"])
+            else:
+                command.extend([f"--save {save}"])
 
         super().__init__(command, host, port, timeout=timeout)
 
@@ -219,8 +199,8 @@ class RedisExecutor(TCPExecutor):
                 f"pytest configuration file."
             )
 
-    def _check_version(self):
-        """Check redises version if it's compatible."""
+    @property
+    def version(self) -> Any:
         with os.popen(f"{self.executable} --version") as version_output:
             version_string = version_output.read()
         if not version_string:
@@ -229,9 +209,12 @@ class RedisExecutor(TCPExecutor):
                 f" {self.executable} not exists or wrong program"
             )
 
-        redis_version = extract_version(version_string)
-        cv_result = compare_version(redis_version, self.MIN_SUPPORTED_VERSION)
-        if redis_version and cv_result < 0:
+        return extract_version(version_string)
+
+    def _check_version(self):
+        """Check redises version if it's compatible."""
+        redis_version = self.version
+        if redis_version < self.MIN_SUPPORTED_VERSION:
             raise RedisUnsupported(
                 f"Your version of Redis is not supported. "
                 f"Consider updating to Redis {self.MIN_SUPPORTED_VERSION} at least. "
