@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+Unreleased
+----------
+
+Features
+++++++++
+
+- Support for Redis 7
+
 2.4.0
 ----------
 

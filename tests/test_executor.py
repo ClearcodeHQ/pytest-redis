@@ -3,6 +3,7 @@ from io import StringIO
 
 import pytest
 import redis
+from pkg_resources import parse_version
 from pytest import FixtureRequest, TempPathFactory
 from mock import mock
 from port_for import get_port
@@ -10,7 +11,6 @@ from port_for import get_port
 from pytest_redis.executor import (
     RedisExecutor,
     RedisMisconfigured,
-    compare_version,
     extract_version,
     RedisUnsupported,
     UnixSocketTooLong,
@@ -168,21 +168,6 @@ def test_too_long_unixsocket(request: FixtureRequest, tmp_path_factory: TempPath
 
 
 @pytest.mark.parametrize(
-    "versions,result",
-    [
-        (["2.8.18", "2.6"], 1),
-        (["2.4.14", "2.6"], -1),
-        (["2.6.0", "2.6"], 0),
-        (["3.0.0", "2.6.17"], 1),
-        (["2.6.1", "2.6.17"], -1),
-    ],
-)
-def test_compare_version(versions, result):
-    """Check if comparing version returns proper comparison result."""
-    assert compare_version(versions[0], versions[1]) == result
-
-
-@pytest.mark.parametrize(
     "text,result",
     [
         ("Redis server version 2.4.14 (00000000:0)", "2.4.14"),
@@ -190,10 +175,14 @@ def test_compare_version(versions, result):
         ("1.2.5", "1.2.5"),
         ("Test2.0.5", "2.0.5"),
         ("2.0.5Test", "2.0.5"),
-        ("Test", None),
         ("m.n.a 2.4.14", "2.4.14"),
     ],
 )
 def test_extract_version(text, result):
     """Check if the version extracction works correctly."""
-    assert extract_version(text) == result
+    assert extract_version(text) == parse_version(result)
+
+
+def test_extract_version_notfound():
+    with pytest.raises(AssertionError):
+        extract_version("Test")
