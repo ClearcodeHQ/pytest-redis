@@ -111,8 +111,23 @@ In order to connect to them, one would be using the ``redis_nooproc`` fixture.
 
         assert redis_external.get("did_it") == 1
 
+Standard configuration options apply to it.
 
-By default the  ``redis_nooproc`` fixture would connect to Redis instance using **6379** port. Standard configuration options apply to it.
+By default the ``redis_nooproc`` fixture would connect to Redis
+instance using **6379** port attempting to make a successful socket
+connection within **15 seconds**. The fixture will block your test run
+within this timeout window. You can overwrite the timeout like so:
+
+
+.. code-block:: python
+
+    # set the blocking wait to 5 seconds
+    redis_external = factories.redis_noproc(timeout=5)
+
+    def test_redis(redis_external):
+        """Check that it's actually working on redis database."""
+        redis_external.set('test1', 'test')
+        # etc etc
 
 These are the configuration options that are working on all levels with the ``redis_nooproc`` fixture:
 
