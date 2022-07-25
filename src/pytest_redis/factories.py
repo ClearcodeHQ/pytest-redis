@@ -32,6 +32,8 @@ def get_config(request):
     options = [
         "host",
         "port",
+        "username",
+        "password",
         "exec",
         "timeout",
         "loglevel",
@@ -55,6 +57,8 @@ def redis_proc(
     timeout=None,
     host=None,
     port=-1,
+    username=None,
+    password=None,
     db_count=None,
     save=None,
     compression=None,
@@ -75,6 +79,8 @@ def redis_proc(
         [(2000,3000)] or (2000,3000) - random available port from a given range
         [{4002,4003}] or {4002,4003} - random of 4002 or 4003 ports
         [(2000,3000), {4002,4003}] -random of given orange and set
+    :param str username: username
+    :param str password: password
     :param int db_count: number of databases redis should have
     :param str save: redis save configuration setting
     :param bool compression: Compress redis dump files
@@ -126,6 +132,8 @@ def redis_proc(
             save=save or config["save"],
             host=host or config["host"],
             port=get_port(port) or get_port(config["port"]),
+            username=username or config["username"],
+            password=password or config["password"],
             timeout=60,
             datadir=redis_datadir,
         )
@@ -137,7 +145,7 @@ def redis_proc(
     return redis_proc_fixture
 
 
-def redis_noproc(host=None, port=None):
+def redis_noproc(host=None, port=None, username=None, password=None):
     """
     Nooproc fixture factory for pytest-redis.
 
@@ -160,7 +168,7 @@ def redis_noproc(host=None, port=None):
         """
         config = get_config(request)
         redis_noopexecutor = NoopRedis(
-            host=host or config["host"], port=port or config["port"] or 6379, unixsocket=None
+            host=host or config["host"], port=port or config["port"] or 6379, username=username or config["username"], password=password or config["password"], unixsocket=None
         )
 
         return redis_noopexecutor
@@ -200,6 +208,8 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
 
         redis_host = proc_fixture.host
         redis_port = proc_fixture.port
+        redis_username = proc_fixture.username if hasattr(proc_fixture, "username") else None
+        redis_password = proc_fixture.password if hasattr(proc_fixture, "password") else None
         redis_db = dbnum
         redis_class = redis.StrictRedis if strict else redis.Redis
         decode_responses = decode if decode is not None else config["decode"]
@@ -208,6 +218,8 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
             redis_host,
             redis_port,
             redis_db,
+            username=redis_username,
+            password=redis_password,
             unix_socket_path=proc_fixture.unixsocket,
             decode_responses=decode_responses,
         )

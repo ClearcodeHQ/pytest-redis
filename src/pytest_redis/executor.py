@@ -57,7 +57,7 @@ class UnixSocketTooLong(Exception):
     """Exception raised when unixsocket path is too long."""
 
 
-NoopRedis = namedtuple("NoopRedis", "host, port, unixsocket")
+NoopRedis = namedtuple("NoopRedis", "host, port, username, password, unixsocket")
 
 
 class RedisExecutor(TCPExecutor):
@@ -81,6 +81,8 @@ class RedisExecutor(TCPExecutor):
         loglevel,
         host,
         port,
+        username=None,
+        password=None,
         timeout=60,
         save="",
         daemonize="no",
@@ -99,6 +101,8 @@ class RedisExecutor(TCPExecutor):
         :param str loglevel: redis log verbosity level
         :param str host: server's host
         :param int port: server's port
+        :param str username: server's username
+        :param str password: server's password
         :param int timeout: executor's timeout for start and stop actions
         :param str log_prefix: prefix for log filename
         :param str save: redis save configuration setting
@@ -114,6 +118,9 @@ class RedisExecutor(TCPExecutor):
             datadir = Path(gettempdir())
         self.unixsocket = str(datadir / f"redis.{port}.sock")
         self.executable = executable
+
+        self.username = username
+        self.password = password
 
         logfile_path = datadir / f"redis-server.{port}.log"
         pidfile_path = datadir / f"redis-server.{port}.pid"
@@ -151,6 +158,11 @@ class RedisExecutor(TCPExecutor):
             "--dir",
             str(datadir),
         ]
+        if password is not None:
+            command.extend([
+                "--requirepass",
+                str(password)
+            ])
         if save:
             if self.version < parse_version("7"):
                 save_parts = save.split()
