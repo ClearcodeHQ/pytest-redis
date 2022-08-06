@@ -59,7 +59,8 @@ class UnixSocketTooLong(Exception):
 
 class NoopRedis(TCPExecutor):
     """Reddis class respsenting an instance started by a third party."""
-    def __init__(self, host, port, unixsocket, timeout=15):
+
+    def __init__(self, host, port, unixsocket, startup_timeout=15):
         """
         Init method of NoopRedis.
 
@@ -70,8 +71,8 @@ class NoopRedis(TCPExecutor):
         self.host = host
         self.port = port
         self.unixsocket = unixsocket
-        self.timeout = timeout
-        super().__init__([], host, port, timeout=timeout)
+        self.timeout = startup_timeout
+        super().__init__([], host, port, timeout=startup_timeout)
 
     def start(self):
         """Start is a NOOP."""
@@ -111,7 +112,7 @@ class RedisExecutor(TCPExecutor):
         loglevel,
         host,
         port,
-        timeout=60,
+        startup_timeout=60,
         save="",
         daemonize="no",
         rdbcompression=True,
@@ -129,7 +130,7 @@ class RedisExecutor(TCPExecutor):
         :param str loglevel: redis log verbosity level
         :param str host: server's host
         :param int port: server's port
-        :param int timeout: executor's timeout for start and stop actions
+        :param int startup_timeout: executor's timeout for start and stop actions
         :param str log_prefix: prefix for log filename
         :param str save: redis save configuration setting
         :param str daemonize:
@@ -197,7 +198,7 @@ class RedisExecutor(TCPExecutor):
             else:
                 command.extend([f"--save {save}"])
 
-        super().__init__(command, host, port, timeout=timeout)
+        super().__init__(command, host, port, timeout=startup_timeout)
 
     @classmethod
     def _redis_bool(cls, value):

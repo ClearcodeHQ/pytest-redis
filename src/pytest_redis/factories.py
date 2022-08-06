@@ -126,7 +126,7 @@ def redis_proc(
             save=save or config["save"],
             host=host or config["host"],
             port=get_port(port) or get_port(config["port"]),
-            timeout=60,
+            startup_timeout=60,
             datadir=redis_datadir,
         )
         redis_executor.start()
@@ -137,13 +137,13 @@ def redis_proc(
     return redis_proc_fixture
 
 
-def redis_noproc(host=None, port=None, timeout=15):
+def redis_noproc(host=None, port=None, startup_timeout=15):
     """
     Nooproc fixture factory for pytest-redis.
 
     :param str host: hostname
     :param str|int port: exact port (e.g. '8000', 8000)
-    :param int timeout: Blocking wait until we give up connecting to Redis.
+    :param int startup_timeout: Blocking wait until we give up connecting to Redis.
     :rtype: func
     :returns: function which makes a redis process
     """
@@ -161,7 +161,10 @@ def redis_noproc(host=None, port=None, timeout=15):
         """
         config = get_config(request)
         redis_noopexecutor = NoopRedis(
-            host=host or config["host"], port=port or config["port"] or 6379, unixsocket=None, timeout=timeout
+            host=host or config["host"],
+            port=port or config["port"] or 6379,
+            unixsocket=None,
+            startup_timeout=startup_timeout,
         )
 
         redis_noopexecutor.start()
