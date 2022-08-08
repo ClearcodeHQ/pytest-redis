@@ -47,6 +47,6 @@ runs:
   - name: Upload coverage to Codecov
     uses: codecov/codecov-action@v3.0.0
     with:
-      flags: linux, elastic-${{ inputs.elasticsearch }}
+      flags: linux,redis-${{ inputs.redis }}
       env_vars: OS, PYTHON
       fail_ci_if_error: true
