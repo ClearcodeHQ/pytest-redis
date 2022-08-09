@@ -208,8 +208,8 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
 
         redis_host = proc_fixture.host
         redis_port = proc_fixture.port
-        redis_username = proc_fixture.username if hasattr(proc_fixture, "username") else None
-        redis_password = proc_fixture.password if hasattr(proc_fixture, "password") else None
+        redis_username = proc_fixture.username
+        redis_password = proc_fixture.password
         redis_db = dbnum
         redis_class = redis.StrictRedis if strict else redis.Redis
         decode_responses = decode if decode is not None else config["decode"]
