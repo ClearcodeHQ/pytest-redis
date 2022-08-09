@@ -192,11 +192,11 @@ def test_extract_version_notfound():
 
 
 def test_noopredis_handles_timeout_when_waiting():
-    with mock.patch('pytest_redis.executor.socket', spec=socket) as patched_socket:
+    with mock.patch("pytest_redis.executor.socket", spec=socket) as patched_socket:
         foo = patched_socket.socket.return_value
         socket_mock = foo.__enter__.return_value
         socket_mock.connect.side_effect = TimeoutError()
-        noop_redis = NoopRedis('localhost', 12345, None, startup_timeout=1)
+        noop_redis = NoopRedis("localhost", 12345, None, startup_timeout=1)
         with pytest.raises(TimeoutExpired):
             noop_redis.start()
 
