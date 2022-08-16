@@ -19,7 +19,7 @@
 import os
 import platform
 import re
-from collections import namedtuple
+import socket
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
@@ -57,7 +57,38 @@ class UnixSocketTooLong(Exception):
     """Exception raised when unixsocket path is too long."""
 
 
-NoopRedis = namedtuple("NoopRedis", "host, port, unixsocket")
+class NoopRedis(TCPExecutor):
+    """Reddis class respsenting an instance started by a third party."""
+
+    def __init__(self, host, port, unixsocket, startup_timeout=15):
+        """
+        Init method of NoopRedis.
+
+        :param str host: server's host
+        :param int port: server's port
+        :param int timeout: executor's timeout for start and stop actions
+        """
+        self.host = host
+        self.port = port
+        self.unixsocket = unixsocket
+        self.timeout = startup_timeout
+        super().__init__([], host, port, timeout=startup_timeout)
+
+    def start(self):
+        """Start is a NOOP."""
+        self._set_timeout()
+        self.wait_for(self.redis_available)
+        return self
+
+    def redis_available(self):
+        """Return True if connecting to Redis is possible"""
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.settimeout(0.1)
+                s.connect((self.host, self.port))
+            except (TimeoutError, ConnectionRefusedError):
+                return False
+        return True
 
 
 class RedisExecutor(TCPExecutor):
@@ -81,7 +112,7 @@ class RedisExecutor(TCPExecutor):
         loglevel,
         host,
         port,
-        timeout=60,
+        startup_timeout=60,
         save="",
         daemonize="no",
         rdbcompression=True,
@@ -99,7 +130,7 @@ class RedisExecutor(TCPExecutor):
         :param str loglevel: redis log verbosity level
         :param str host: server's host
         :param int port: server's port
-        :param int timeout: executor's timeout for start and stop actions
+        :param int startup_timeout: executor's timeout for start and stop actions
         :param str log_prefix: prefix for log filename
         :param str save: redis save configuration setting
         :param str daemonize:
@@ -167,7 +198,7 @@ class RedisExecutor(TCPExecutor):
             else:
                 command.extend([f"--save {save}"])
 
-        super().__init__(command, host, port, timeout=timeout)
+        super().__init__(command, host, port, timeout=startup_timeout)
 
     @classmethod
     def _redis_bool(cls, value):

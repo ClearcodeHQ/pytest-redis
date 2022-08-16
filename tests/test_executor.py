@@ -1,6 +1,7 @@
 """Clean executor's tests."""
 from io import StringIO
 
+import socket
 import pytest
 import redis
 from pkg_resources import parse_version
@@ -8,7 +9,9 @@ from pytest import FixtureRequest, TempPathFactory
 from mock import mock
 from port_for import get_port
 
+from mirakuru.exceptions import TimeoutExpired
 from pytest_redis.executor import (
+    NoopRedis,
     RedisExecutor,
     RedisMisconfigured,
     extract_version,
@@ -47,7 +50,7 @@ def test_redis_exec_configuration(
         loglevel=config["loglevel"],
         port=get_port(None),
         host=config["host"],
-        timeout=30,
+        startup_timeout=30,
         datadir=tmpdir,
         **parameter,
     )
@@ -78,7 +81,7 @@ def test_redis_exec(request: FixtureRequest, tmp_path_factory: TempPathFactory, 
         loglevel=config["loglevel"],
         port=get_port(None),
         host=config["host"],
-        timeout=30,
+        startup_timeout=30,
         datadir=tmpdir,
         **parameter,
     )
@@ -128,7 +131,7 @@ def test_old_redis_version(request: FixtureRequest, tmp_path_factory: TempPathFa
                 loglevel=config["loglevel"],
                 port=get_port(None),
                 host=config["host"],
-                timeout=30,
+                startup_timeout=30,
                 datadir=tmpdir,
             ).start()
 
@@ -145,7 +148,7 @@ def test_not_existing_redis(request: FixtureRequest, tmp_path_factory: TempPathF
             loglevel=config["loglevel"],
             port=get_port(None),
             host=config["host"],
-            timeout=30,
+            startup_timeout=30,
             datadir=tmpdir,
         ).start()
 
@@ -162,7 +165,7 @@ def test_too_long_unixsocket(request: FixtureRequest, tmp_path_factory: TempPath
             loglevel=config["loglevel"],
             port=get_port(None),
             host=config["host"],
-            timeout=30,
+            startup_timeout=30,
             datadir=tmpdir,
         ).start()
 
@@ -186,3 +189,17 @@ def test_extract_version(text, result):
 def test_extract_version_notfound():
     with pytest.raises(AssertionError):
         extract_version("Test")
+
+
+def test_noopredis_handles_timeout_when_waiting():
+    with mock.patch("pytest_redis.executor.socket", spec=socket) as patched_socket:
+        foo = patched_socket.socket.return_value
+        socket_mock = foo.__enter__.return_value
+        socket_mock.connect.side_effect = TimeoutError()
+        noop_redis = NoopRedis("localhost", 12345, None, startup_timeout=1)
+        with pytest.raises(TimeoutExpired):
+            noop_redis.start()
+
+        assert not noop_redis.running()
+        socket_mock.settimeout.assert_called_with(0.1)
+        socket_mock.connect.assert_called()
