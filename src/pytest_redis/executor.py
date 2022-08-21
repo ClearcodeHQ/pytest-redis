@@ -195,7 +195,7 @@ class RedisExecutor(TCPExecutor):
             "--dir",
             str(datadir),
         ]
-        if password is not None:
+        if password:
             command.extend(["--requirepass", str(password)])
         if save:
             if self.version < parse_version("7"):
