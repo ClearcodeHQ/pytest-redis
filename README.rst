@@ -168,6 +168,18 @@ You can pick which you prefer, but remember that these settings are handled in t
      - redis_port
      - port
      - random
+   * - username
+     - username
+     - --redis-username
+     - redis_username
+     - username
+     - None
+   * - password
+     - password
+     - --redis-password
+     - redis_password
+     - password
+     - None
    * - connection timeout
      - timeout
      - --redis-timeout

@@ -37,3 +37,15 @@ def test_external_redis(redisdb2, redisdb2_noop):
 
     assert redisdb2_noop.get("test1") == b"test_other"
     assert redisdb2_noop.get("test2") == b"test_other"
+
+
+def test_external_redis_auth(redisdb3, redisdb3_noop):
+    """Check that nooproc connects to the same redis."""
+    redisdb3.set("test1", "test_other")
+    redisdb3.set("test2", "test_other")
+
+    assert redisdb3.get("test1") == b"test_other"
+    assert redisdb3.get("test2") == b"test_other"
+
+    assert redisdb3_noop.get("test1") == b"test_other"
+    assert redisdb3_noop.get("test2") == b"test_other"

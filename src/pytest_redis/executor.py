@@ -60,16 +60,22 @@ class UnixSocketTooLong(Exception):
 class NoopRedis(TCPExecutor):
     """Reddis class respsenting an instance started by a third party."""
 
-    def __init__(self, host, port, unixsocket, startup_timeout=15):
+    def __init__(
+        self, host, port, username=None, password=None, unixsocket=None, startup_timeout=15
+    ):
         """
         Init method of NoopRedis.
 
         :param str host: server's host
         :param int port: server's port
+        :param str username: server's username
+        :param str password: server's password
         :param int timeout: executor's timeout for start and stop actions
         """
         self.host = host
         self.port = port
+        self.username = username
+        self.password = password
         self.unixsocket = unixsocket
         self.timeout = startup_timeout
         super().__init__([], host, port, timeout=startup_timeout)
@@ -112,6 +118,8 @@ class RedisExecutor(TCPExecutor):
         loglevel,
         host,
         port,
+        username=None,
+        password=None,
         startup_timeout=60,
         save="",
         daemonize="no",
@@ -130,6 +138,8 @@ class RedisExecutor(TCPExecutor):
         :param str loglevel: redis log verbosity level
         :param str host: server's host
         :param int port: server's port
+        :param str username: server's username
+        :param str password: server's password
         :param int startup_timeout: executor's timeout for start and stop actions
         :param str log_prefix: prefix for log filename
         :param str save: redis save configuration setting
@@ -145,6 +155,9 @@ class RedisExecutor(TCPExecutor):
             datadir = Path(gettempdir())
         self.unixsocket = str(datadir / f"redis.{port}.sock")
         self.executable = executable
+
+        self.username = username
+        self.password = password
 
         logfile_path = datadir / f"redis-server.{port}.log"
         pidfile_path = datadir / f"redis-server.{port}.pid"
@@ -182,6 +195,8 @@ class RedisExecutor(TCPExecutor):
             "--dir",
             str(datadir),
         ]
+        if password:
+            command.extend(["--requirepass", str(password)])
         if save:
             if self.version < parse_version("7"):
                 save_parts = save.split()
