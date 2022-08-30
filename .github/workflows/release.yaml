@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_part:
+        description: "Version to release the project with"
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+        - patch
+        - minor
+        - major
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release this project
+        id: hello
+        uses: fizyk/releaser@v0.0.1
+        with:
+          bump_part: ${{ inputs.bump_part }}
+          user: "Grzegorz Śliwiński"
+          email: "fizyk@clearcodehq.github.com"
