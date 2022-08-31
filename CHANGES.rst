@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-Unreleased
+unreleased
 ----------
 
 Features
