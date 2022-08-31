@@ -19,8 +19,7 @@ jobs:
     steps:
       - name: Release this project
         id: hello
-        uses: fizyk/releaser@v0.0.1
+        uses: fizyk/releaser@v0.0.2
         with:
           bump_part: ${{ inputs.bump_part }}
-          user: "Grzegorz Śliwiński"
-          email: "fizyk@clearcodehq.github.com"
+          token: ${{ secrets.GITHUB_TOKEN }}
