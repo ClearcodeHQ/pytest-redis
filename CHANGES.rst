@@ -8,6 +8,13 @@ Features
 ++++++++
 
 - Support for Redis 7
+- NoopRedis fixture - used to connecto extenrally set up redis, now properly waits till it's ready to accept connections
+- added username and password settings used to connect to the redis instances, set up both internall and externally.
+
+CI
+++
+
+- Added manual pipeline for releasing new versions
 
 2.4.0
 ----------
