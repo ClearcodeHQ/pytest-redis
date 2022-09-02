@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Release this project
         id: hello
-        uses: fizyk/releaser@v0.0.2
+        uses: fizyk/releaser@v0.0.3
         with:
           bump_part: ${{ inputs.bump_part }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PUBLISH_SECRET }}
