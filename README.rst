@@ -155,7 +155,7 @@ You can pick which you prefer, but remember that these settings are handled in t
      - --redis-exec
      - redis_exec
      - -
-     - /usr/bin/redis-server
+     - Look in PATH for redis-server via shutil.which
    * - host
      - host
      - --redis-host
