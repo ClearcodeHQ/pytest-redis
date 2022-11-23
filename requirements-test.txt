@@ -6,5 +6,5 @@ pytest-cov==4.0.0
 coverage==6.5.0 # pytest-cov
 pytest-xdist==3.0.2
 Mock==4.0.3
-redis==4.3.4
+redis==4.3.5
 -e .[tests]
