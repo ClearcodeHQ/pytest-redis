@@ -1,0 +1,1 @@
+Use shutilo.where to find redis-server by default
