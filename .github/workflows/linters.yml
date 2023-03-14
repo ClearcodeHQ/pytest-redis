@@ -3,13 +3,13 @@ name: Run linters
 on:
   push:
     branches: [ main ]
-    paths:
-      - '**.py'
-      - .github/workflows/linters.yml
-      - requirements-lint.txt
   pull_request:
     branches: [ main ]
 
 jobs:
   lint:
-    uses: fizyk/actions-reuse/.github/workflows/linters-python.yml@v1.3.1
+    uses: fizyk/actions-reuse/.github/workflows/linters-python.yml@v1.7.1
+    with:
+      pipenv: true
+      pipenv-install-options: "--skip-lock"
+

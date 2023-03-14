@@ -87,7 +87,7 @@ class NoopRedis(TCPExecutor):
         return self
 
     def redis_available(self):
-        """Return True if connecting to Redis is possible"""
+        """Return True if connecting to Redis is possible."""
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
                 s.settimeout(0.1)
@@ -247,6 +247,7 @@ class RedisExecutor(TCPExecutor):
 
     @property
     def version(self) -> Any:
+        """Return redis version."""
         with os.popen(f"{self.executable} --version") as version_output:
             version_string = version_output.read()
         if not version_string:
