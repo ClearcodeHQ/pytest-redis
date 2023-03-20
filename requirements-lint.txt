@@ -1,5 +1,0 @@
-# linters
-pycodestyle==2.9.1
-pydocstyle==6.1.1
-black==22.10.0
--r requirements-test.txt

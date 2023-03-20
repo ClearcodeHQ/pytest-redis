@@ -7,6 +7,9 @@ line-length = 100
 target-version = ['py38']
 include = '.*\.pyi?$'
 
+[tool.pydocstyle]
+ignore = "D203,D212"
+
 [tool.towncrier]
 directory = "newsfragments"
 single_file=true

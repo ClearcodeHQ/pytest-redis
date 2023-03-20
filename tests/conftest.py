@@ -1,6 +1,7 @@
 """Tests main conftest file."""
 import warnings
 
+from pytest_redis.plugin import *
 from pytest_redis import factories
 
 warnings.filterwarnings(
