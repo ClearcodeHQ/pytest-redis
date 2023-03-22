@@ -14,7 +14,7 @@ towncrier = "==22.12"
 pytest-cov = "==4.0.0"
 pytest-xdist = "==3.0.2"
 mock = "==4.0.3"
-pycodestyle = "==2.9.1"
+pycodestyle = "==2.10.0"
 pydocstyle = {version = "==6.1.1", extras = ["toml"]}
 black = "==22.10.0"
 
