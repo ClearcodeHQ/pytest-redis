@@ -12,4 +12,5 @@ jobs:
     with:
       pipenv: true
       pipenv-install-options: "--skip-lock"
+      mypy: true
 

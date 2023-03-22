@@ -17,7 +17,7 @@
 # along with pytest-redis.  If not, see <http://www.gnu.org/licenses/>.
 """Plugin configuration module for pytest-redis."""
 from shutil import which
-from tempfile import gettempdir
+from pytest import Parser
 
 from pytest_redis import factories
 
@@ -41,7 +41,7 @@ _help_decode = (
 _help_datadir = "Directory where test Redis instance data files will be stored"
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: Parser) -> None:
     """Define configuration options."""
     parser.addini(name="redis_exec", help=_help_exec, default=which("redis-server"))
     parser.addini(name="redis_host", help=_help_host, default="127.0.0.1")
