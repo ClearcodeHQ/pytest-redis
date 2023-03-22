@@ -1,6 +1,63 @@
+[project]
+name = "pytest-redis"
+version = "2.4.0"
+description = "Redis fixtures and fixture factories for Pytest."
+readme = "README.rst"
+keywords = ["tests", "pytest", "fixture", "redis"]
+license = {file = "LICENSE"}
+authors = [
+    {name = "Grzegorz Śliwiński", email = "fizyk+pypi@fizyk.dev"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing",
+    "Framework :: Pytest",
+]
+dependencies = [
+    "pytest >= 6.2",
+    "port-for >= 0.6.0",
+    "mirakuru",
+    "redis",
+]
+requires-python = ">= 3.7"
+
+[project.urls]
+"Source" = "https://github.com/ClearcodeHQ/pytest-redis"
+"Bug Tracker" = "https://github.com/ClearcodeHQ/pytest-redis/issues"
+"Changelog" = "https://github.com/ClearcodeHQ/pytest-redis/blob/v2.4.0/CHANGES.rst"
+
+[project.entry-points."pytest11"]
+pytest_redis = "pytest_redis.plugin"
+
 [build-system]
-requires = ["setuptools >= 40.6.0", "wheel"]
+requires = ["setuptools >= 61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+zip-safe = true
+
+[tool.setuptools.packages.find]
+include = ["pytest_redis*"]
+exclude = ["tests*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+xfail_strict=true
+addopts = "--max-worker-restart=0 --showlocals --verbose --cov"
+testpaths = "tests"
 
 [tool.black]
 line-length = 100
