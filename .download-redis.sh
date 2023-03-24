@@ -15,10 +15,6 @@ if [ ! -f "$HOME/redis" ]; then
   mkdir $HOME/redis
 fi
 
-download_redis http://download.redis.io/releases/redis-7.0.2.tar.gz 7
-download_redis http://download.redis.io/releases/redis-6.2.7.tar.gz 6.2
-download_redis http://download.redis.io/releases/redis-6.0.9.tar.gz 6
-download_redis http://download.redis.io/releases/redis-5.0.9.tar.gz 5
-download_redis http://download.redis.io/releases/redis-4.0.9.tar.gz 4
-download_redis http://download.redis.io/releases/redis-3.2.9.tar.gz 3.2
-download_redis http://download.redis.io/releases/redis-2.8.9.tar.gz 2.8
+download_redis http://download.redis.io/releases/redis-7.0.10.tar.gz 7
+download_redis http://download.redis.io/releases/redis-6.2.11.tar.gz 6.2
+download_redis http://download.redis.io/releases/redis-6.0.18.tar.gz 6.0

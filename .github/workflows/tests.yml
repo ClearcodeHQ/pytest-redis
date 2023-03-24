@@ -78,13 +78,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
           redis: "6.2"
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
-  tests_5:
-    needs: [tests_7]
+  tests_6_0:
+    needs: [tests_6]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        python-version: [3.8, 3.9, "3.10"]
+        python-version: [3.8, 3.9, "3.10", pypy-3.8]
     env:
       OS: ubuntu-latest
       PYTHON: ${{ matrix.python-version }}
@@ -93,56 +93,5 @@ jobs:
       - uses: ./.github/actions/pytest
         with:
           python-version: ${{ matrix.python-version }}
-          redis: "5"
-          codecov_token: ${{ secrets.CODECOV_TOKEN }}
-  tests_4:
-    needs: [tests_5]
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        python-version: [3.8, 3.9, "3.10"]
-    env:
-      OS: ubuntu-latest
-      PYTHON: ${{ matrix.python-version }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/pytest
-        with:
-          python-version: ${{ matrix.python-version }}
-          redis: "4"
-          codecov_token: ${{ secrets.CODECOV_TOKEN }}
-  tests_3:
-    needs: [tests_4]
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        python-version: [3.8, 3.9, "3.10"]
-    env:
-      OS: ubuntu-latest
-      PYTHON: ${{ matrix.python-version }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/pytest
-        with:
-          python-version: ${{ matrix.python-version }}
-          redis: "3.2"
-          codecov_token: ${{ secrets.CODECOV_TOKEN }}
-  tests_2:
-    needs: [tests_3]
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        python-version: [3.8, 3.9, "3.10"]
-    env:
-      OS: ubuntu-latest
-      PYTHON: ${{ matrix.python-version }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/pytest
-        with:
-          python-version: ${{ matrix.python-version }}
-          redis: "2.8"
+          redis: "6.0"
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
