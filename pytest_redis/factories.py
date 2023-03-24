@@ -223,15 +223,14 @@ def redis_noproc(
 
 
 def redisdb(
-    process_fixture_name: str, dbnum: int = 0, strict: bool = True, decode: Optional[bool] = None
+    process_fixture_name: str, dbnum: int = 0, decode: Optional[bool] = None
 ) -> Callable[[FixtureRequest], Generator[redis.Redis, None, None]]:
     """
     Create connection fixture factory for pytest-redis.
 
     :param process_fixture_name: name of the process fixture
     :param dbnum: number of database to use
-    :param strict: if true, uses StrictRedis client class
-    :param decode_responses: Client: to decode response or not.
+    :param decode: Client: to decode response or not.
         See redis.StrictRedis decode_reponse client parameter.
     :returns: function which makes a connection to redis
     """
@@ -260,12 +259,11 @@ def redisdb(
         redis_username = proc_fixture.username
         redis_password = proc_fixture.password
         redis_db = dbnum
-        redis_class = redis.StrictRedis if strict else redis.Redis
         decode_responses: Union[Literal[True], Literal[False]] = (
             decode if decode is not None else config["decode"]
         )
 
-        redis_client = redis_class(
+        redis_client = redis.Redis(
             redis_host,
             redis_port,
             redis_db,

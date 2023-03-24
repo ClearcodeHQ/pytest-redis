@@ -1,0 +1,2 @@
+Removed the bit hidden ability to select over Redis/StrictRedis client for client fixture.
+For a long time both were same client already.
