@@ -3,6 +3,46 @@ CHANGELOG
 
 .. towncrier release notes start
 
+3.0.0 (2023-03-24)
+==================
+
+Breaking changes
+----------------
+
+- Dropped support for Python 3.7 (`#428 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/428>`_)
+
+
+Bugfixes
+--------
+
+- NoopRedis fixture - used to connecto extenrally set up redis, now properly waits till it's ready to accept connections (`#388 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/388>`_)
+
+
+Features
+--------
+
+- Use shutilo.where to find redis-server by default (`#374 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/374>`_)
+- Support for Redis 7 (`#391 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/391>`_)
+- Added username and password settings used to connect to the redis instances, set up both internally and externally. (`#404 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/404>`_)
+- Fully type pytest-redis (`#428 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/428>`_)
+- Support python 3.11 (`#437 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/437>`_)
+
+
+Miscellaneus
+------------
+
+- Added py.typed file (`#422 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/422>`_)
+- Added towncrier to manage newsfragment/CHANGELOG (`#424 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/424>`_)
+- Migrate dependency management to pipenv (`#425 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/425>`_)
+- Moved most of the project's packaging and configuration to pyproject.toml (`#426 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/426>`_)
+- Migrate automerge to a shared workflow based on application token management. (`#427 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/427>`_)
+- Added mypy checks for CI (`#428 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/428>`_)
+- Use tbump instead of bumpversion to manage release process (`#429 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/429>`_)
+- Remove Redis versions older nat 6.0.x from CI as they have reached EOL. (`#445 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/445>`_)
+- Removed the bit hidden ability to select over Redis/StrictRedis client for client fixture.
+  For a long time both were same client already. (`#447 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/447>`_)
+- Split bigger code modules into smaller chunks. (`#452 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/452>`_)
+
 
 2.4.0
 =====

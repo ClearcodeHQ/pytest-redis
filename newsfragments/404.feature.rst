@@ -1,1 +1,0 @@
-Added username and password settings used to connect to the redis instances, set up both internally and externally.

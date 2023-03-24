@@ -1,1 +1,0 @@
-Moved most of the project's packaging and configuration to pyproject.toml

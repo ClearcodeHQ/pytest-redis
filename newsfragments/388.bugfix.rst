@@ -1,1 +1,0 @@
-NoopRedis fixture - used to connecto extenrally set up redis, now properly waits till it's ready to accept connections
