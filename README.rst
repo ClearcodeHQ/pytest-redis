@@ -261,7 +261,11 @@ Options below are for configuring redis client fixture.
 | decode_response     | decode                   | --redis-decode      | redis_decode      | False   |
 +---------------------+--------------------------+---------------------+-------------------+---------+
 
-Package resources
------------------
+Release
+=======
 
-* Bug tracker: https://github.com/ClearcodeHQ/pytest-redis/issues
+Install pipenv and --dev dependencies first, Then run:
+
+.. code-block::
+
+    pipenv run tbump [NEW_VERSION]
