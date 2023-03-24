@@ -1,32 +1,16 @@
-# Copyright (C) 2017 by Clearcode <http://clearcode.cc>
-# and associates (see AUTHORS).
-
-# This file is part of pytest-redis.
-
-# pytest-redis is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# pytest-redis is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-
-# You should have received a copy of the GNU Lesser General Public License
-# along with pytest-redis.  If not, see <http://www.gnu.org/licenses/>.
 """Redis executor."""
 import os
 import platform
 import re
-import socket
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Union, Any, Optional, Literal
+from typing import Any, Optional, Literal
 
 from mirakuru import TCPExecutor
 from pkg_resources import parse_version
+
+from pytest_redis.exception import UnixSocketTooLong, RedisMisconfigured, RedisUnsupported
 
 MAX_UNIXSOCKET = 104
 if platform.system() == "Linux":
@@ -44,70 +28,11 @@ def extract_version(text: str) -> Any:
     return parse_version(matches.group(0))
 
 
-class RedisUnsupported(Exception):
-    """Exception raised when redis<2.6 would be detected."""
-
-
-class RedisMisconfigured(Exception):
-    """Exception raised when the redis_exec points to non existing file."""
-
-
-class UnixSocketTooLong(Exception):
-    """Exception raised when unixsocket path is too long."""
-
-
-class NoopRedis(TCPExecutor):
-    """Reddis class respsenting an instance started by a third party."""
-
-    def __init__(
-        self,
-        host: str,
-        port: int,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        unixsocket: Optional[str] = None,
-        startup_timeout: int = 15,
-    ) -> None:
-        """
-        Init method of NoopRedis.
-
-        :param host: server's host
-        :param port: server's port
-        :param username: server's username
-        :param password: server's password
-        :param timeout: executor's timeout for start and stop actions
-        """
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
-        # TODO: Can this be actually, arbitrary None?
-        self.unixsocket = unixsocket
-        self.timeout = startup_timeout
-        super().__init__([], host, port, timeout=startup_timeout)
-
-    def start(self) -> "NoopRedis":
-        """Start is a NOOP."""
-        self._set_timeout()
-        self.wait_for(self.redis_available)
-        return self
-
-    def redis_available(self) -> bool:
-        """Return True if connecting to Redis is possible."""
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            try:
-                s.settimeout(0.1)
-                s.connect((self.host, self.port))
-            except (TimeoutError, ConnectionRefusedError):
-                return False
-        return True
-
-
 class RedisExecutor(TCPExecutor):
     """
-    Reddis executor.
+    Redis executor.
 
-    Extended TCPExecutor to contain all required logic for parametrising
+    Extended TCPExecutor to contain all required logic for parametrizing
     and properly constructing command to start redis-server.
     """
 
