@@ -1,0 +1,1 @@
+Remove Redis versions older nat 6.0.x from CI as they have reached EOL.
