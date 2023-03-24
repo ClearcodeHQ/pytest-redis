@@ -30,7 +30,7 @@ dependencies = [
     "pytest >= 6.2",
     "port-for >= 0.6.0",
     "mirakuru",
-    "redis",
+    "redis >= 3",
 ]
 requires-python = ">= 3.8"
 
