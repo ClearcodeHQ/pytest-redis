@@ -23,11 +23,10 @@ import socket
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Union, Any
+from typing import Union, Any, Optional, Literal
 
 from mirakuru import TCPExecutor
 from pkg_resources import parse_version
-from py.path import local
 
 MAX_UNIXSOCKET = 104
 if platform.system() == "Linux":
@@ -61,32 +60,39 @@ class NoopRedis(TCPExecutor):
     """Reddis class respsenting an instance started by a third party."""
 
     def __init__(
-        self, host, port, username=None, password=None, unixsocket=None, startup_timeout=15
-    ):
+        self,
+        host: str,
+        port: int,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        unixsocket: Optional[str] = None,
+        startup_timeout: int = 15,
+    ) -> None:
         """
         Init method of NoopRedis.
 
-        :param str host: server's host
-        :param int port: server's port
-        :param str username: server's username
-        :param str password: server's password
-        :param int timeout: executor's timeout for start and stop actions
+        :param host: server's host
+        :param port: server's port
+        :param username: server's username
+        :param password: server's password
+        :param timeout: executor's timeout for start and stop actions
         """
         self.host = host
         self.port = port
         self.username = username
         self.password = password
+        # TODO: Can this be actually, arbitrary None?
         self.unixsocket = unixsocket
         self.timeout = startup_timeout
         super().__init__([], host, port, timeout=startup_timeout)
 
-    def start(self):
+    def start(self) -> "NoopRedis":
         """Start is a NOOP."""
         self._set_timeout()
         self.wait_for(self.redis_available)
         return self
 
-    def redis_available(self):
+    def redis_available(self) -> bool:
         """Return True if connecting to Redis is possible."""
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
@@ -112,44 +118,44 @@ class RedisExecutor(TCPExecutor):
 
     def __init__(
         self,
-        executable,
-        databases,
-        redis_timeout,
-        loglevel,
-        host,
-        port,
-        username=None,
-        password=None,
-        startup_timeout=60,
-        save="",
-        daemonize="no",
-        rdbcompression=True,
-        rdbchecksum=False,
-        syslog_enabled=False,
-        appendonly="no",
-        datadir: Union[local, Path] = None,
-    ):  # pylint:disable=too-many-locals
+        executable: str,
+        databases: int,
+        redis_timeout: int,
+        loglevel: str,
+        host: str,
+        port: int,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        startup_timeout: int = 60,
+        save: str = "",
+        daemonize: str = "no",
+        rdbcompression: bool = True,
+        rdbchecksum: bool = False,
+        syslog_enabled: bool = False,
+        appendonly: str = "no",
+        datadir: Optional[Path] = None,
+    ) -> None:  # pylint:disable=too-many-locals
         """
         Init method of a RedisExecutor.
 
-        :param str executable: path to redis-server
-        :param int databases: number of databases
-        :param int redis_timeout: client's connection timeout
-        :param str loglevel: redis log verbosity level
-        :param str host: server's host
-        :param int port: server's port
-        :param str username: server's username
-        :param str password: server's password
-        :param int startup_timeout: executor's timeout for start and stop actions
-        :param str log_prefix: prefix for log filename
-        :param str save: redis save configuration setting
-        :param str daemonize:
-        :param bool rdbcompression: Compress redis dump files
-        :param bool rdbchecksum: Whether to add checksum to the rdb files
-        :param bool syslog_enabled: Whether to enable logging
+        :param executable: path to redis-server
+        :param databases: number of databases
+        :param redis_timeout: client's connection timeout
+        :param loglevel: redis log verbosity level
+        :param host: server's host
+        :param port: server's port
+        :param username: server's username
+        :param password: server's password
+        :param startup_timeout: executor's timeout for start and stop actions
+        :param log_prefix: prefix for log filename
+        :param save: redis save configuration setting
+        :param daemonize:
+        :param rdbcompression: Compress redis dump files
+        :param rdbchecksum: Whether to add checksum to the rdb files
+        :param syslog_enabled: Whether to enable logging
             to the system logger
         :param datadir: location where all the process files will be located
-        :param str appendonly:
+        :param appendonly:
         """
         if not datadir:
             datadir = Path(gettempdir())
@@ -216,7 +222,7 @@ class RedisExecutor(TCPExecutor):
         super().__init__(command, host, port, timeout=startup_timeout)
 
     @classmethod
-    def _redis_bool(cls, value):
+    def _redis_bool(cls, value: Any) -> Literal["yes", "no"]:
         """
         Convert the boolean value to redis's yes/no.
 
@@ -226,13 +232,14 @@ class RedisExecutor(TCPExecutor):
         """
         return "yes" if value and value != "no" else "no"
 
-    def start(self):
+    def start(self) -> "RedisExecutor":
         """Check supported version before starting."""
         self._check_unixsocket_length()
         self._check_version()
-        return super().start()
+        super().start()
+        return self
 
-    def _check_unixsocket_length(self):
+    def _check_unixsocket_length(self) -> None:
         """Check unixsocket length."""
         if len(self.unixsocket) > MAX_UNIXSOCKET:
             raise UnixSocketTooLong(
@@ -258,7 +265,7 @@ class RedisExecutor(TCPExecutor):
 
         return extract_version(version_string)
 
-    def _check_version(self):
+    def _check_version(self) -> None:
         """Check redises version if it's compatible."""
         redis_version = self.version
         if redis_version < self.MIN_SUPPORTED_VERSION:

@@ -17,6 +17,7 @@
 # along with pytest-redis.  If not, see <http://www.gnu.org/licenses/>.
 """Fixture factories for pytest-redis."""
 from pathlib import Path
+from typing import TypedDict, Any, Optional, Tuple, Set, List, Union, Callable, Generator, Literal
 
 import pytest
 import redis
@@ -26,77 +27,108 @@ from port_for import get_port
 from pytest_redis.executor import RedisExecutor, NoopRedis
 
 
-def get_config(request):
+class RedisConfigType(TypedDict):
+    host: str
+    port: Optional[int]
+    username: str
+    password: str
+    exec: str
+    timeout: int
+    loglevel: str
+    db_count: int
+    save: str
+    compression: bool
+    rdbchecksum: bool
+    syslog: bool
+    decode: bool
+    datadir: str
+
+
+def get_config(request: FixtureRequest) -> RedisConfigType:
     """Return a dictionary with config options."""
-    config = {}
-    options = [
-        "host",
-        "port",
-        "username",
-        "password",
-        "exec",
-        "timeout",
-        "loglevel",
-        "db_count",
-        "save",
-        "compression",
-        "rdbchecksum",
-        "syslog",
-        "decode",
-        "datadir",
-    ]
-    for option in options:
+
+    def get_conf_option(option: str) -> Any:
         option_name = "redis_" + option
-        conf = request.config.getoption(option_name) or request.config.getini(option_name)
-        config[option] = conf
+        return request.config.getoption(option_name) or request.config.getini(option_name)
+
+    port = get_conf_option("port")
+    config: RedisConfigType = {
+        "host": get_conf_option("host"),
+        "port": int(port) if port else None,
+        "username": get_conf_option("username"),
+        "password": get_conf_option("password"),
+        "exec": get_conf_option("exec"),
+        "timeout": int(get_conf_option("timeout")),
+        "loglevel": get_conf_option("loglevel"),
+        "db_count": int(get_conf_option("db_count")),
+        "save": get_conf_option("save"),
+        "compression": bool(get_conf_option("compression")),
+        "rdbchecksum": bool(get_conf_option("rdbchecksum")),
+        "syslog": bool(get_conf_option("syslog")),
+        "decode": bool(get_conf_option("decode")),
+        "datadir": get_conf_option("datadir"),
+    }
     return config
 
 
 def redis_proc(
-    executable=None,
-    timeout=None,
-    host=None,
-    port=-1,
-    username=None,
-    password=None,
-    db_count=None,
-    save=None,
-    compression=None,
-    checksum=None,
-    syslog=None,
-    loglevel=None,
-    datadir=None,
-):
+    executable: Optional[str] = None,
+    timeout: Optional[int] = None,
+    host: Optional[str] = None,
+    port: Union[
+        None,
+        str,
+        int,
+        Tuple[int, int],
+        Set[int],
+        List[str],
+        List[int],
+        List[Tuple[int, int]],
+        List[Set[int]],
+        List[Union[Set[int], Tuple[int, int]]],
+        List[Union[str, int, Tuple[int, int], Set[int]]],
+    ] = -1,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+    db_count: Optional[int] = None,
+    save: Optional[str] = None,
+    compression: Optional[bool] = None,
+    checksum: Optional[bool] = None,
+    syslog: Optional[bool] = None,
+    loglevel: Optional[str] = None,
+    datadir: Optional[str] = None,
+) -> Callable[[FixtureRequest, TempPathFactory], Generator[RedisExecutor, None, None]]:
     """
     Fixture factory for pytest-redis.
 
-    :param str executable: path to redis-server
-    :param int timeout: client's connection timeout
-    :param str host: hostname
-    :param str|int|tuple|set|list port:
+    :param executable: path to redis-server
+    :param timeout: client's connection timeout
+    :param host: hostname
+    :param port:
         exact port (e.g. '8000', 8000)
         randomly selected port (None) - any random available port
         [(2000,3000)] or (2000,3000) - random available port from a given range
         [{4002,4003}] or {4002,4003} - random of 4002 or 4003 ports
         [(2000,3000), {4002,4003}] -random of given orange and set
-    :param str username: username
-    :param str password: password
-    :param int db_count: number of databases redis should have
-    :param str save: redis save configuration setting
-    :param bool compression: Compress redis dump files
-    :param bool checksum: Whether to add checksum to the rdb files
-    :param bool syslog:Whether to enable logging to the system logger
-    :param str loglevel: redis log verbosity level.
+    :param username: username
+    :param password: password
+    :param db_count: number of databases redis should have
+    :param save: redis save configuration setting
+    :param compression: Compress redis dump files
+    :param checksum: Whether to add checksum to the rdb files
+    :param syslog:Whether to enable logging to the system logger
+    :param loglevel: redis log verbosity level.
         One of debug, verbose, notice or warning
-    :param str datadir: Path for redis data files, including the unix domain socket.
+    :param datadir: Path for redis data files, including the unix domain socket.
         If this is not configured, then a temporary directory is created and used
         instead.
-    :rtype: func
     :returns: function which makes a redis process
     """
 
     @pytest.fixture(scope="session")
-    def redis_proc_fixture(request: FixtureRequest, tmp_path_factory: TempPathFactory):
+    def redis_proc_fixture(
+        request: FixtureRequest, tmp_path_factory: TempPathFactory
+    ) -> Generator[RedisExecutor, None, None]:
         """
         Fixture for pytest-redis.
 
@@ -111,8 +143,8 @@ def redis_proc(
         """
         config = get_config(request)
         redis_exec = executable or config["exec"]
-        rdbcompression = config["compression"] if compression is None else compression
-        rdbchecksum = config["rdbchecksum"] if checksum is None else checksum
+        rdbcompression: bool = config["compression"] if compression is None else compression
+        rdbchecksum: bool = config["rdbchecksum"] if checksum is None else checksum
 
         if datadir:
             redis_datadir = Path(datadir)
@@ -121,6 +153,8 @@ def redis_proc(
         else:
             redis_datadir = tmp_path_factory.mktemp(f"pytest-redis-{request.fixturename}")
 
+        redis_port = get_port(port) or get_port(config["port"])
+        assert redis_port
         redis_executor = RedisExecutor(
             executable=redis_exec,
             databases=db_count or config["db_count"],
@@ -131,35 +165,38 @@ def redis_proc(
             syslog_enabled=syslog or config["syslog"],
             save=save or config["save"],
             host=host or config["host"],
-            port=get_port(port) or get_port(config["port"]),
+            port=redis_port,
             username=username or config["username"],
             password=password or config["password"],
             startup_timeout=60,
             datadir=redis_datadir,
         )
-        redis_executor.start()
-        request.addfinalizer(redis_executor.stop)
-
-        return redis_executor
+        with redis_executor:
+            yield redis_executor
 
     return redis_proc_fixture
 
 
-def redis_noproc(host=None, port=None, username=None, password=None, startup_timeout=15):
+def redis_noproc(
+    host: Optional[str] = None,
+    port: Optional[int] = None,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+    startup_timeout: int = 15,
+) -> Callable[[FixtureRequest], Generator[NoopRedis, None, None]]:
     """
     Nooproc fixture factory for pytest-redis.
 
-    :param str host: hostname
-    :param str|int port: exact port (e.g. '8000', 8000)
-    :param str username: username used for authentication
-    :param str password: password used for authentication
-    :param int startup_timeout: Blocking wait until we give up connecting to Redis.
-    :rtype: func
+    :param host: hostname
+    :param port: exact port (e.g. '8000', 8000)
+    :param username: username used for authentication
+    :param password: password used for authentication
+    :param startup_timeout: Blocking wait until we give up connecting to Redis.
     :returns: function which makes a redis process
     """
 
     @pytest.fixture(scope="session")
-    def redis_nooproc_fixture(request):
+    def redis_nooproc_fixture(request: FixtureRequest) -> Generator[NoopRedis, None, None]:
         """
         Nooproc fixture for pytest-redis.
 
@@ -179,27 +216,28 @@ def redis_noproc(host=None, port=None, username=None, password=None, startup_tim
             startup_timeout=startup_timeout,
         )
 
-        redis_noopexecutor.start()
-        return redis_noopexecutor
+        with redis_noopexecutor:
+            yield redis_noopexecutor
 
     return redis_nooproc_fixture
 
 
-def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
+def redisdb(
+    process_fixture_name: str, dbnum: int = 0, strict: bool = True, decode: Optional[bool] = None
+) -> Callable[[FixtureRequest], Generator[redis.Redis, None, None]]:
     """
     Create connection fixture factory for pytest-redis.
 
-    :param str process_fixture_name: name of the process fixture
-    :param int dbnum: number of database to use
-    :param bool strict: if true, uses StrictRedis client class
-    :param bool decode_responses: Client: to decode response or not.
+    :param process_fixture_name: name of the process fixture
+    :param dbnum: number of database to use
+    :param strict: if true, uses StrictRedis client class
+    :param decode_responses: Client: to decode response or not.
         See redis.StrictRedis decode_reponse client parameter.
-    :rtype: func
     :returns: function which makes a connection to redis
     """
 
     @pytest.fixture
-    def redisdb_factory(request):
+    def redisdb_factory(request: FixtureRequest) -> Generator[redis.Redis, None, None]:
         """
         Create connection for pytest-redis.
 
@@ -212,7 +250,9 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
         :rtype: redis.client.Redis
         :returns: Redis client
         """
-        proc_fixture = request.getfixturevalue(process_fixture_name)
+        proc_fixture: Union[NoopRedis, RedisExecutor] = request.getfixturevalue(
+            process_fixture_name
+        )
         config = get_config(request)
 
         redis_host = proc_fixture.host
@@ -221,7 +261,9 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
         redis_password = proc_fixture.password
         redis_db = dbnum
         redis_class = redis.StrictRedis if strict else redis.Redis
-        decode_responses = decode if decode is not None else config["decode"]
+        decode_responses: Union[Literal[True], Literal[False]] = (
+            decode if decode is not None else config["decode"]
+        )
 
         redis_client = redis_class(
             redis_host,
@@ -232,9 +274,9 @@ def redisdb(process_fixture_name, dbnum=0, strict=True, decode=None):
             unix_socket_path=proc_fixture.unixsocket,
             decode_responses=decode_responses,
         )
-        request.addfinalizer(redis_client.flushall)
 
-        return redis_client
+        yield redis_client
+        redis_client.flushall()
 
     return redisdb_factory
 

@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", pypy-3.8]
+        python-version: [3.8, 3.9, "3.10", pypy-3.8]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -50,7 +50,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", pypy-3.8]
+        python-version: [3.8, 3.9, "3.10", pypy-3.8]
     env:
       OS: ubuntu-latest
       PYTHON: ${{ matrix.python-version }}
@@ -67,7 +67,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", pypy-3.8]
+        python-version: [3.8, 3.9, "3.10", pypy-3.8]
     env:
       OS: ubuntu-latest
       PYTHON: ${{ matrix.python-version }}
@@ -84,7 +84,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10"]
+        python-version: [3.8, 3.9, "3.10"]
     env:
       OS: ubuntu-latest
       PYTHON: ${{ matrix.python-version }}
@@ -101,7 +101,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10"]
+        python-version: [3.8, 3.9, "3.10"]
     env:
       OS: ubuntu-latest
       PYTHON: ${{ matrix.python-version }}
@@ -118,7 +118,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10"]
+        python-version: [3.8, 3.9, "3.10"]
     env:
       OS: ubuntu-latest
       PYTHON: ${{ matrix.python-version }}
@@ -135,7 +135,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10"]
+        python-version: [3.8, 3.9, "3.10"]
     env:
       OS: ubuntu-latest
       PYTHON: ${{ matrix.python-version }}
