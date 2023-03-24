@@ -19,6 +19,9 @@
 from shutil import which
 from pytest import Parser
 
+import pytest_redis.factories.client
+import pytest_redis.factories.noproc
+import pytest_redis.factories.proc
 from pytest_redis import factories
 
 
@@ -118,7 +121,7 @@ def pytest_addoption(parser: Parser) -> None:
     parser.addoption("--redis-datadir", action="store", dest="redis_datadir", help=_help_datadir)
 
 
-redis_proc = factories.redis_proc()
-redis_nooproc = factories.redis_noproc()
-redisdb = factories.redisdb("redis_proc")
+redis_proc = pytest_redis.factories.proc.redis_proc()
+redis_nooproc = pytest_redis.factories.noproc.redis_noproc()
+redisdb = pytest_redis.factories.client.redisdb("redis_proc")
 # pylint:enable=invalid-name

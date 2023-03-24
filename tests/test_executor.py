@@ -12,15 +12,14 @@ from mock import mock
 from port_for import get_port
 
 from mirakuru.exceptions import TimeoutExpired
+
+from pytest_redis.config import get_config
+from pytest_redis.exception import RedisMisconfigured, UnixSocketTooLong, RedisUnsupported
 from pytest_redis.executor import (
     NoopRedis,
     RedisExecutor,
-    RedisMisconfigured,
-    extract_version,
-    RedisUnsupported,
-    UnixSocketTooLong,
 )
-from pytest_redis.factories import get_config
+from pytest_redis.executor.process import extract_version
 
 
 @pytest.mark.parametrize(
@@ -209,7 +208,7 @@ def test_extract_version_notfound() -> None:
 
 
 def test_noopredis_handles_timeout_when_waiting() -> None:
-    with mock.patch("pytest_redis.executor.socket", spec=socket) as patched_socket:
+    with mock.patch("pytest_redis.executor.noop.socket", spec=socket) as patched_socket:
         foo = patched_socket.socket.return_value
         socket_mock = foo.__enter__.return_value
         socket_mock.connect.side_effect = TimeoutError()
