@@ -4,7 +4,7 @@ version = "3.0.0"
 description = "Redis fixtures and fixture factories for Pytest."
 readme = "README.rst"
 keywords = ["tests", "pytest", "fixture", "redis"]
-license = {file = "LICENSE"}
+license = {file = "COPYING.lesser"}
 authors = [
     {name = "Grzegorz Śliwiński", email = "fizyk+pypi@fizyk.dev"}
 ]
