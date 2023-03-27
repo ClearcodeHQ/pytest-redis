@@ -3,6 +3,15 @@ CHANGELOG
 
 .. towncrier release notes start
 
+3.0.1 (2023-03-27)
+==================
+
+Bugfixes
+--------
+
+- Fixed packaging LICENSE file. (`#453 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/453>`_)
+
+
 3.0.0 (2023-03-24)
 ==================
 
