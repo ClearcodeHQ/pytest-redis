@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pytest = "==7.2.2"
+pytest = "==7.3.0"
 port-for = "==0.6.3"
 mirakuru = "==2.5.1"
 redis = "==4.5.4"
