@@ -3,6 +3,15 @@ CHANGELOG
 
 .. towncrier release notes start
 
+3.0.2 (2023-04-19)
+==================
+
+Bugfixes
+--------
+
+- Include py.typed in MANIFEST.in (`#471 <https://https://github.com/ClearcodeHQ/pytest-redis/issues/471>`_)
+
+
 3.0.1 (2023-03-27)
 ==================
 

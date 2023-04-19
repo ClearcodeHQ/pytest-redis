@@ -1,1 +1,0 @@
-Include py.typed in MANIFEST.in
