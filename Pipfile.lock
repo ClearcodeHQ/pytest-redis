@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b2a5fcd34e3eafe09fda855b9d4ce7c9a8792f86dd3cf53f26c5e29a60cea740"
+            "sha256": "47c97e6b1fcb52841523795003a375792973bd4dfb839c0fa04b0bc446273149"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -476,11 +476,11 @@
         },
         "platformdirs": {
             "hashes": [
-                "sha256:47692bc24c1958e8b0f13dd727307cff1db103fca36399f457da8e05f222fdc4",
-                "sha256:7954a68d0ba23558d753f73437c55f89027cf8f5108c19844d4b82e5af396335"
+                "sha256:412dae91f52a6f84830f39a8078cecd0e866cb72294a5c66808e74d5e88d251f",
+                "sha256:e2378146f1964972c03c085bb5662ae80b2b8c06226c54b2ff4aa9483e8a13a5"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.5.0"
+            "version": "==3.5.1"
         },
         "pluggy": {
             "hashes": [
@@ -612,11 +612,11 @@
         },
         "types-redis": {
             "hashes": [
-                "sha256:26547d91f011a4024375d9216cd4d917b4678c984201d46f72c604526c138523",
-                "sha256:c7132e0cedeb52a83d20138c0440721bfae89cd2027c1ef57a294b56dfde4ee8"
+                "sha256:2fe82f374d9dddf007deaf23d81fddcfd9523d9522bf11523c5c43bc5b27099e",
+                "sha256:bf8692252038dbe03b007ca4fde87d3ae8e10610854a6858e3bf5d01721a7c4b"
             ],
             "index": "pypi",
-            "version": "==4.5.5.0"
+            "version": "==4.5.5.2"
         },
         "types-setuptools": {
             "hashes": [
