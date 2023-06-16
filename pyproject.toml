@@ -71,7 +71,7 @@ ignore = "D203,D212"
 directory = "newsfragments"
 single_file=true
 filename="CHANGES.rst"
-issue_format="`#{issue} <https://https://github.com/ClearcodeHQ/pytest-redis/issues/{issue}>`_"
+issue_format="`#{issue} <https://github.com/ClearcodeHQ/pytest-redis/issues/{issue}>`_"
 
 [tool.towncrier.fragment.feature]
 name = "Features"
