@@ -7,7 +7,7 @@ name = "pypi"
 pytest = "==7.3.2"
 port-for = "==0.7.0"
 mirakuru = "==2.5.1"
-redis = "==4.5.5"
+redis = "==4.6.0"
 
 [dev-packages]
 towncrier = "==23.6.0"
