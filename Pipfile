@@ -13,7 +13,7 @@ redis = "==4.6.0"
 towncrier = "==23.6.0"
 pytest-cov = "==4.1.0"
 pytest-xdist = "==3.3.1"
-mock = "==5.0.2"
+mock = "==5.1.0"
 pycodestyle = "==2.10.0"
 pydocstyle = {version = "==6.3.0", extras = ["toml"]}
 black = "==23.7.0"
