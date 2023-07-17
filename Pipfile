@@ -18,7 +18,7 @@ pycodestyle = "==2.10.0"
 pydocstyle = {version = "==6.3.0", extras = ["toml"]}
 black = "==23.7.0"
 mypy = "==1.4.1"
-types-setuptools = "==68.0.0.1"
+types-setuptools = "==68.0.0.2"
 types-mock = "==5.0.0.7"
 types-redis = "==4.6.0.2"
 tbump = "==6.10.0"
