@@ -20,7 +20,7 @@ black = "==23.7.0"
 mypy = "==1.4.1"
 types-setuptools = "==68.0.0.2"
 types-mock = "==5.1.0.1"
-types-redis = "==4.6.0.2"
+types-redis = "==4.6.0.3"
 tbump = "==6.10.0"
 
 [requires]
