@@ -13,6 +13,5 @@ jobs:
       pipenv-install-options: "--skip-lock"
       mypy: true
       black: true
-      pydocstyle: true
-      pycodestyle: true
+      ruff: true
 

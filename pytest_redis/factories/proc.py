@@ -1,6 +1,6 @@
 """Redis process fixture factory."""
 from pathlib import Path
-from typing import Optional, Union, Tuple, Set, List, Callable, Generator
+from typing import Callable, Generator, List, Optional, Set, Tuple, Union
 
 import pytest
 from _pytest.fixtures import FixtureRequest
@@ -38,8 +38,7 @@ def redis_proc(
     loglevel: Optional[str] = None,
     datadir: Optional[str] = None,
 ) -> Callable[[FixtureRequest, TempPathFactory], Generator[RedisExecutor, None, None]]:
-    """
-    Fixture factory for pytest-redis.
+    """Fixture factory for pytest-redis.
 
     :param executable: path to redis-server
     :param timeout: client's connection timeout
@@ -69,8 +68,7 @@ def redis_proc(
     def redis_proc_fixture(
         request: FixtureRequest, tmp_path_factory: TempPathFactory
     ) -> Generator[RedisExecutor, None, None]:
-        """
-        Fixture for pytest-redis.
+        """Fixture for pytest-redis.
 
         #. Get configs.
         #. Run redis process.

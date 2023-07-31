@@ -1,5 +1,5 @@
 """Redis client fixture factory."""
-from typing import Optional, Callable, Generator, Union, Literal
+from typing import Callable, Generator, Literal, Optional, Union
 
 import pytest
 import redis
@@ -12,8 +12,7 @@ from pytest_redis.executor import NoopRedis, RedisExecutor
 def redisdb(
     process_fixture_name: str, dbnum: int = 0, decode: Optional[bool] = None
 ) -> Callable[[FixtureRequest], Generator[redis.Redis, None, None]]:
-    """
-    Create connection fixture factory for pytest-redis.
+    """Create connection fixture factory for pytest-redis.
 
     :param process_fixture_name: name of the process fixture
     :param dbnum: number of database to use
@@ -24,8 +23,7 @@ def redisdb(
 
     @pytest.fixture
     def redisdb_factory(request: FixtureRequest) -> Generator[redis.Redis, None, None]:
-        """
-        Create connection for pytest-redis.
+        """Create connection for pytest-redis.
 
         #. Load required process fixture.
         #. Get redis module and config.
