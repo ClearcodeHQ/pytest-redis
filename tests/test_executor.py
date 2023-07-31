@@ -1,20 +1,18 @@
 """Clean executor's tests."""
-from io import StringIO
-
 import socket
-from typing import Dict, Any, Union, Literal
+from io import StringIO
+from typing import Any, Dict, Literal
 
 import pytest
 import redis
-from pkg_resources import parse_version
-from pytest import FixtureRequest, TempPathFactory
-from mock import mock
-from port_for import get_port
-
 from mirakuru.exceptions import TimeoutExpired
+from mock import mock
+from pkg_resources import parse_version
+from port_for import get_port
+from pytest import FixtureRequest, TempPathFactory
 
 from pytest_redis.config import get_config
-from pytest_redis.exception import RedisMisconfigured, UnixSocketTooLong, RedisUnsupported
+from pytest_redis.exception import RedisMisconfigured, RedisUnsupported, UnixSocketTooLong
 from pytest_redis.executor import (
     NoopRedis,
     RedisExecutor,
@@ -40,14 +38,13 @@ def test_redis_exec_configuration(
     config_option: str,
     value: str,
 ) -> None:
-    """
-    Check if RedisExecutor properly processes configuration options.
+    """Check if RedisExecutor properly processes configuration options.
 
     Improperly set options won't be set in redis,
     and we won't be able to read it out of redis.
     """
     config = get_config(request)
-    tmpdir = tmp_path_factory.mktemp(f"pytest-redis-test-test_redis_exec_configuration")
+    tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_redis_exec_configuration")
     redis_port = get_port(None)
     assert redis_port
     redis_exec = RedisExecutor(
@@ -73,13 +70,12 @@ def test_redis_exec_configuration(
 def test_redis_exec(
     request: FixtureRequest, tmp_path_factory: TempPathFactory, syslog_enabled: bool
 ) -> None:
-    """
-    Check if RedisExecutor properly starts with these configuration options.
+    """Check if RedisExecutor properly starts with these configuration options.
 
     Incorrect options won't even start redis.
     """
     config = get_config(request)
-    tmpdir = tmp_path_factory.mktemp(f"pytest-redis-test-test_redis_exec")
+    tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_redis_exec")
     redis_port = get_port(None)
     assert redis_port
     redis_exec = RedisExecutor(
@@ -131,7 +127,7 @@ def test_old_redis_version(
 ) -> None:
     """Test how fixture behaves in case of old redis version."""
     config = get_config(request)
-    tmpdir = tmp_path_factory.mktemp(f"pytest-redis-test-test_old_redis_version")
+    tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_old_redis_version")
     with mock.patch("os.popen", lambda *args: StringIO(version)):
         with pytest.raises(RedisUnsupported):
             redis_port = get_port(None)
@@ -151,7 +147,7 @@ def test_old_redis_version(
 def test_not_existing_redis(request: FixtureRequest, tmp_path_factory: TempPathFactory) -> None:
     """Check handling of misconfigured redis executable path."""
     config = get_config(request)
-    tmpdir = tmp_path_factory.mktemp(f"pytest-redis-test-test_not_existing_redis")
+    tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_not_existing_redis")
     with pytest.raises(RedisMisconfigured):
         redis_port = get_port(None)
         assert redis_port
@@ -170,7 +166,7 @@ def test_not_existing_redis(request: FixtureRequest, tmp_path_factory: TempPathF
 def test_too_long_unixsocket(request: FixtureRequest, tmp_path_factory: TempPathFactory) -> None:
     """Check handling of misconfigured redis executable path."""
     config = get_config(request)
-    tmpdir = tmp_path_factory.mktemp(f"x" * 110)
+    tmpdir = tmp_path_factory.mktemp("x" * 110)
     with pytest.raises(UnixSocketTooLong):
         redis_port = get_port(None)
         assert redis_port
@@ -203,11 +199,13 @@ def test_extract_version(text: str, result: str) -> None:
 
 
 def test_extract_version_notfound() -> None:
+    """Check error raised if version is not found."""
     with pytest.raises(AssertionError):
         extract_version("Test")
 
 
 def test_noopredis_handles_timeout_when_waiting() -> None:
+    """Test handling timeuts by NoopRedis."""
     with mock.patch("pytest_redis.executor.noop.socket", spec=socket) as patched_socket:
         foo = patched_socket.socket.return_value
         socket_mock = foo.__enter__.return_value

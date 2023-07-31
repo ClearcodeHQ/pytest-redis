@@ -233,25 +233,25 @@ Example usage:
 
 * pass it as an argument in your own fixture
 
-    .. code-block:: python
+.. code-block:: python
 
-        redis_proc = factories.redis_proc(port=8888)
+    redis_proc = factories.redis_proc(port=8888)
 
 * use ``--redis-port`` command line option when you run your tests
 
-    .. code-block::
+.. code-block:: bash
 
-        py.test tests --redis-port=8888
+    py.test tests --redis-port=8888
 
 
 * specify your port as ``redis_port`` in your ``pytest.ini`` file.
 
     To do so, put a line like the following under the ``[pytest]`` section of your ``pytest.ini``:
 
-    .. code-block:: ini
+.. code-block:: ini
 
-        [pytest]
-        redis_port = 8888
+    [pytest]
+    redis_port = 8888
 
 Options below are for configuring redis client fixture.
 
@@ -266,6 +266,6 @@ Release
 
 Install pipenv and --dev dependencies first, Then run:
 
-.. code-block::
+.. code-block:: bash
 
     pipenv run tbump [NEW_VERSION]

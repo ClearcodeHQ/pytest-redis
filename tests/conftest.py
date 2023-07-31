@@ -4,8 +4,7 @@ import warnings
 import pytest_redis.factories.client
 import pytest_redis.factories.noproc
 import pytest_redis.factories.proc
-from pytest_redis.plugin import *
-from pytest_redis import factories
+from pytest_redis.plugin import *  # noqa: F403
 
 warnings.filterwarnings(
     "error", category=DeprecationWarning, module="(_pytest|pytest|redis|path|mirakuru).*"

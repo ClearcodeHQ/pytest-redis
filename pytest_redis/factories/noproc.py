@@ -1,5 +1,5 @@
 """Redis noop fixture factory."""
-from typing import Optional, Callable, Generator
+from typing import Callable, Generator, Optional
 
 import pytest
 from _pytest.fixtures import FixtureRequest
@@ -15,8 +15,7 @@ def redis_noproc(
     password: Optional[str] = None,
     startup_timeout: int = 15,
 ) -> Callable[[FixtureRequest], Generator[NoopRedis, None, None]]:
-    """
-    Nooproc fixture factory for pytest-redis.
+    """Nooproc fixture factory for pytest-redis.
 
     :param host: hostname
     :param port: exact port (e.g. '8000', 8000)
@@ -28,8 +27,7 @@ def redis_noproc(
 
     @pytest.fixture(scope="session")
     def redis_nooproc_fixture(request: FixtureRequest) -> Generator[NoopRedis, None, None]:
-        """
-        Nooproc fixture for pytest-redis.
+        """Nooproc fixture for pytest-redis.
 
         Builds mock executor to run tests with
 

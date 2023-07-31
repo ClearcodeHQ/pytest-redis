@@ -17,13 +17,12 @@
 # along with pytest-redis.  If not, see <http://www.gnu.org/licenses/>.
 """Plugin configuration module for pytest-redis."""
 from shutil import which
+
 from pytest import Parser
 
 import pytest_redis.factories.client
 import pytest_redis.factories.noproc
 import pytest_redis.factories.proc
-from pytest_redis import factories
-
 
 # pylint:disable=invalid-name
 _help_exec = "Redis server executable"

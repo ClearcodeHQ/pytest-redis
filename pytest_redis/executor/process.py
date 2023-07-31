@@ -5,12 +5,12 @@ import re
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Any, Optional, Literal
+from typing import Any, Literal, Optional
 
 from mirakuru import TCPExecutor
 from pkg_resources import parse_version
 
-from pytest_redis.exception import UnixSocketTooLong, RedisMisconfigured, RedisUnsupported
+from pytest_redis.exception import RedisMisconfigured, RedisUnsupported, UnixSocketTooLong
 
 MAX_UNIXSOCKET = 104
 if platform.system() == "Linux":
@@ -18,8 +18,7 @@ if platform.system() == "Linux":
 
 
 def extract_version(text: str) -> Any:
-    """
-    Extract version number from the text.
+    """Extract version number from the text.
 
     :param text: text that contains the version number
     """
@@ -29,8 +28,7 @@ def extract_version(text: str) -> Any:
 
 
 class RedisExecutor(TCPExecutor):
-    """
-    Redis executor.
+    """Redis executor.
 
     Extended TCPExecutor to contain all required logic for parametrizing
     and properly constructing command to start redis-server.
@@ -60,8 +58,7 @@ class RedisExecutor(TCPExecutor):
         appendonly: str = "no",
         datadir: Optional[Path] = None,
     ) -> None:  # pylint:disable=too-many-locals
-        """
-        Init method of a RedisExecutor.
+        """Init method of a RedisExecutor.
 
         :param executable: path to redis-server
         :param databases: number of databases
@@ -148,8 +145,7 @@ class RedisExecutor(TCPExecutor):
 
     @classmethod
     def _redis_bool(cls, value: Any) -> Literal["yes", "no"]:
-        """
-        Convert the boolean value to redis's yes/no.
+        """Convert the boolean value to redis's yes/no.
 
         :param bool value: boolean value to convert
         :returns: yes for True, no for False

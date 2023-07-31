@@ -17,8 +17,7 @@ class NoopRedis(TCPExecutor):
         unixsocket: Optional[str] = None,
         startup_timeout: int = 15,
     ) -> None:
-        """
-        Init method of NoopRedis.
+        """Init method of NoopRedis.
 
         :param host: server's host
         :param port: server's port

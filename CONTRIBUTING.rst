@@ -1,5 +1,5 @@
 Contribute to pytest-redis
-==============
+==========================
 
 Thank you for taking time to contribute to pytest-redis!
 
