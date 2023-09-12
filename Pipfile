@@ -20,7 +20,7 @@ types-setuptools = "==68.2.0.0"
 types-mock = "==5.1.0.2"
 types-redis = "==4.6.0.5"
 tbump = "==6.11.0"
-ruff = "==0.0.287"
+ruff = "==0.0.288"
 rstcheck = "==6.2.0"
 
 [requires]
