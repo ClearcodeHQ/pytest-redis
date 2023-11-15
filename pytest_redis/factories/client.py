@@ -10,7 +10,10 @@ from pytest_redis.executor import NoopRedis, RedisExecutor
 
 
 def redisdb(
-    process_fixture_name: str, dbnum: int = 0, decode: Optional[bool] = None
+    process_fixture_name: str,
+    dbnum: int = 0,
+    decode: Optional[bool] = None,
+    flush: bool = True,
 ) -> Callable[[FixtureRequest], Generator[redis.Redis, None, None]]:
     """Create connection fixture factory for pytest-redis.
 
@@ -18,6 +21,7 @@ def redisdb(
     :param dbnum: number of database to use
     :param decode: Client: to decode response or not.
         See redis.StrictRedis decode_reponse client parameter.
+    :param flush: run FLUSHALL after every test.
     :returns: function which makes a connection to redis
     """
 
@@ -59,6 +63,7 @@ def redisdb(
         )
 
         yield redis_client
-        redis_client.flushall()
+        if flush:
+            redis_client.flushall()
 
     return redisdb_factory
