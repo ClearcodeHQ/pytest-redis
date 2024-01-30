@@ -1,4 +1,5 @@
 """Reddis class respsenting an instance started by a third party."""
+
 import socket
 from typing import Optional
 

@@ -1,4 +1,5 @@
 """Redis noop fixture factory."""
+
 from typing import Callable, Generator, Optional
 
 import pytest

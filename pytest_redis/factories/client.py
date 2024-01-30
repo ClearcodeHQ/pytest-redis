@@ -1,4 +1,5 @@
 """Redis client fixture factory."""
+
 from typing import Callable, Generator, Literal, Optional, Union
 
 import pytest
