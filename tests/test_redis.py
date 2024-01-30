@@ -1,4 +1,5 @@
 """Module containing all tests for pytest-redis."""
+
 from redis.client import Redis
 
 

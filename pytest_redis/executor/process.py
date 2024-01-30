@@ -1,4 +1,5 @@
 """Redis executor."""
+
 import os
 import platform
 import re

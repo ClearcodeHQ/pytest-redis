@@ -1,4 +1,5 @@
 """Tests main conftest file."""
+
 import warnings
 
 import pytest_redis.factories.client

@@ -1,4 +1,5 @@
 """Redis process fixture factory."""
+
 from pathlib import Path
 from typing import Callable, Generator, List, Optional, Set, Tuple, Union
 

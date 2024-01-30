@@ -1,4 +1,5 @@
 """Clean executor's tests."""
+
 import socket
 from io import StringIO
 from typing import Any, Dict, Literal
