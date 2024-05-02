@@ -47,5 +47,6 @@ def get_config(request: FixtureRequest) -> RedisConfigType:
         "syslog": bool(get_conf_option("syslog")),
         "decode": bool(get_conf_option("decode")),
         "datadir": get_conf_option("datadir"),
+        "modules": get_conf_option("modules"),
     }
     return config

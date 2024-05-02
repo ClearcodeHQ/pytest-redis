@@ -58,6 +58,7 @@ class RedisExecutor(TCPExecutor):
         syslog_enabled: bool = False,
         appendonly: str = "no",
         datadir: Optional[Path] = None,
+        modules: Optional[list[str]] = None,
     ) -> None:  # pylint:disable=too-many-locals
         """Init method of a RedisExecutor.
 
@@ -79,6 +80,7 @@ class RedisExecutor(TCPExecutor):
             to the system logger
         :param datadir: location where all the process files will be located
         :param appendonly:
+        :param modules: list of paths of Redis extension modules to load
         """
         if not datadir:
             datadir = Path(gettempdir())
@@ -141,6 +143,10 @@ class RedisExecutor(TCPExecutor):
                     command.extend([f"--save {time} {change}"])
             else:
                 command.extend([f"--save {save}"])
+
+        if modules:
+            for module_path in modules:
+                command.extend(["--loadmodule", module_path])
 
         super().__init__(command, host, port, timeout=startup_timeout)
 

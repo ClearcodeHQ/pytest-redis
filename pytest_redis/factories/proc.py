@@ -38,6 +38,7 @@ def redis_proc(
     syslog: Optional[bool] = None,
     loglevel: Optional[str] = None,
     datadir: Optional[str] = None,
+    modules: Optional[list[str]] = None,
 ) -> Callable[[FixtureRequest, TempPathFactory], Generator[RedisExecutor, None, None]]:
     """Fixture factory for pytest-redis.
 
@@ -62,6 +63,7 @@ def redis_proc(
     :param datadir: Path for redis data files, including the unix domain socket.
         If this is not configured, then a temporary directory is created and used
         instead.
+    :param modules: list of paths of Redis extension modules to load
     :returns: function which makes a redis process
     """
 
@@ -92,6 +94,13 @@ def redis_proc(
         else:
             redis_datadir = tmp_path_factory.mktemp(f"pytest-redis-{request.fixturename}")
 
+        if modules:
+            redis_modules = modules
+        elif config.get("modules"):
+            redis_modules = config["modules"].split(",")
+        else:
+            redis_modules = []
+
         redis_port = get_port(port) or get_port(config["port"])
         assert redis_port
         redis_executor = RedisExecutor(
@@ -109,6 +118,7 @@ def redis_proc(
             password=password or config["password"],
             startup_timeout=60,
             datadir=redis_datadir,
+            modules=redis_modules,
         )
         with redis_executor:
             yield redis_executor

@@ -228,6 +228,12 @@ You can pick which you prefer, but remember that these settings are handled in t
      - redis_datadir
      - -
      - ""
+   * - Redis test instance extension module(s) path
+     - modules (list of paths)
+     - --redis-modules (comma-separated string)
+     - redis_modules (comma-separated string)
+     - -
+     - ""
 
 Example usage:
 
