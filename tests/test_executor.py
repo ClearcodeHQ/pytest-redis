@@ -6,7 +6,7 @@ from typing import Any, Dict, Literal
 
 import pytest
 import redis
-from mirakuru.exceptions import TimeoutExpired
+from mirakuru.exceptions import TimeoutExpired, ProcessExitedWithError
 from mock import mock
 from pkg_resources import parse_version
 from port_for import get_port
@@ -218,3 +218,26 @@ def test_noopredis_handles_timeout_when_waiting() -> None:
         assert not noop_redis.running()
         socket_mock.settimeout.assert_called_with(0.1)
         socket_mock.connect.assert_called()
+
+
+def test_redis_modules_option(request, tmp_path_factory) -> None:
+    """Set 'module' keyword argument and check command line"""
+    config = get_config(request)
+    tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_redis_exec_configuration")
+    redis_port = get_port(None)
+    assert redis_port
+    redis_exec = RedisExecutor(
+        executable=config["exec"],
+        databases=4,
+        redis_timeout=config["timeout"],
+        loglevel=config["loglevel"],
+        port=redis_port,
+        host=config["host"],
+        startup_timeout=30,
+        datadir=tmpdir,
+        modules=["nonexistent.so", "nonexistent2.so"]
+    )
+    with pytest.raises(ProcessExitedWithError, match="--loadmodule nonexistent.so --loadmodule nonexistent2.so"):
+       with redis_exec:
+           pass
+
