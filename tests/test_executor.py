@@ -226,6 +226,7 @@ def test_redis_modules_option(request, tmp_path_factory) -> None:
     tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_redis_exec_configuration")
     redis_port = get_port(None)
     assert redis_port
+
     redis_exec = RedisExecutor(
         executable=config["exec"],
         databases=4,
@@ -235,9 +236,21 @@ def test_redis_modules_option(request, tmp_path_factory) -> None:
         host=config["host"],
         startup_timeout=30,
         datadir=tmpdir,
-        modules=["nonexistent.so", "nonexistent2.so"]
+        modules=["nonexistent.so", "nonexistent2.so"],
     )
-    with pytest.raises(ProcessExitedWithError, match="--loadmodule nonexistent.so --loadmodule nonexistent2.so"):
-       with redis_exec:
-           pass
+    try:
+        with pytest.raises(
+            ProcessExitedWithError, match="--loadmodule nonexistent.so --loadmodule nonexistent2.so"
+        ):
+            redis_exec.start()
 
+        logfile = redis_exec.command_parts[redis_exec.command_parts.index("--logfile") + 1]
+        with open(logfile, "r") as logfile:
+            logfile_text = logfile.read()
+        assert (
+            "# Module nonexistent.so failed to load: nonexistent.so: cannot open shared object file"
+            in logfile_text
+        )
+        # cannot check for nonexistent2.so because Redis stops at first invalid module
+    finally:
+        redis_exec.stop()
