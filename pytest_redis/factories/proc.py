@@ -38,7 +38,7 @@ def redis_proc(
     syslog: Optional[bool] = None,
     loglevel: Optional[str] = None,
     datadir: Optional[str] = None,
-    modules: Optional[list[str]] = None,
+    modules: Optional[List[str]] = None,
 ) -> Callable[[FixtureRequest, TempPathFactory], Generator[RedisExecutor, None, None]]:
     """Fixture factory for pytest-redis.
 

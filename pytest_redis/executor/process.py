@@ -6,7 +6,7 @@ import re
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Any, Literal, Optional
+from typing import Any, Literal, Optional, List
 
 from mirakuru import TCPExecutor
 from pkg_resources import parse_version
@@ -58,7 +58,7 @@ class RedisExecutor(TCPExecutor):
         syslog_enabled: bool = False,
         appendonly: str = "no",
         datadir: Optional[Path] = None,
-        modules: Optional[list[str]] = None,
+        modules: Optional[List[str]] = None,
     ) -> None:  # pylint:disable=too-many-locals
         """Init method of a RedisExecutor.
 
