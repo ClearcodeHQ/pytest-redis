@@ -22,6 +22,7 @@ class RedisConfigType(TypedDict):
     syslog: bool
     decode: bool
     datadir: str
+    modules: Optional[str]
 
 
 def get_config(request: FixtureRequest) -> RedisConfigType:

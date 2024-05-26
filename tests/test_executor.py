@@ -220,7 +220,7 @@ def test_noopredis_handles_timeout_when_waiting() -> None:
         socket_mock.connect.assert_called()
 
 
-def test_redis_modules_option(request, tmp_path_factory) -> None:
+def test_redis_modules_option(request: FixtureRequest, tmp_path_factory: TempPathFactory) -> None:
     """Set 'module' keyword argument and check command line"""
     config = get_config(request)
     tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_redis_exec_configuration")
@@ -244,8 +244,8 @@ def test_redis_modules_option(request, tmp_path_factory) -> None:
         ):
             redis_exec.start()
 
-        logfile = redis_exec.command_parts[redis_exec.command_parts.index("--logfile") + 1]
-        with open(logfile, "r") as logfile:
+        logfilename = redis_exec.command_parts[redis_exec.command_parts.index("--logfile") + 1]
+        with open(logfilename, "r") as logfile:
             logfile_text = logfile.read()
         assert (
             "# Module nonexistent.so failed to load: nonexistent.so: cannot open shared object file"
