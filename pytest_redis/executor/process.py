@@ -6,7 +6,7 @@ import re
 from itertools import islice
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Any, Literal, Optional, List
+from typing import Any, List, Literal, Optional
 
 from mirakuru import TCPExecutor
 from pkg_resources import parse_version

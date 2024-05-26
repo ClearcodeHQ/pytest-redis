@@ -6,7 +6,7 @@ from typing import Any, Dict, Literal
 
 import pytest
 import redis
-from mirakuru.exceptions import TimeoutExpired, ProcessExitedWithError
+from mirakuru.exceptions import ProcessExitedWithError, TimeoutExpired
 from mock import mock
 from pkg_resources import parse_version
 from port_for import get_port
@@ -221,7 +221,7 @@ def test_noopredis_handles_timeout_when_waiting() -> None:
 
 
 def test_redis_modules_option(request: FixtureRequest, tmp_path_factory: TempPathFactory) -> None:
-    """Set 'module' keyword argument and check command line"""
+    """Set 'module' keyword argument and check command line."""
     config = get_config(request)
     tmpdir = tmp_path_factory.mktemp("pytest-redis-test-test_redis_exec_configuration")
     redis_port = get_port(None)
