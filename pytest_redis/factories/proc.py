@@ -96,7 +96,7 @@ def redis_proc(
 
         if modules:
             redis_modules = modules
-        elif config.get("modules"):
+        elif config["modules"]:
             redis_modules = config["modules"].split(",")
         else:
             redis_modules = []
