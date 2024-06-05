@@ -1,1 +1,0 @@
-Drop old install_py test step, that's supposed to install packages for caching purposes.

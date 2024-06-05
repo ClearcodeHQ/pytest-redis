@@ -1,1 +1,0 @@
-Add '--redis-modules' command line option (or 'redis_modules' in .ini file) to specify comma-separated list of Redis extension modules to load

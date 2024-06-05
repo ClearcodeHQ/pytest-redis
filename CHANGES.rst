@@ -3,6 +3,28 @@ CHANGELOG
 
 .. towncrier release notes start
 
+3.1.0 (2024-06-05)
+==================
+
+Features
+--------
+
+- Add '--redis-modules' command line option (or 'redis_modules' in .ini file) to specify comma-separated list of Redis extension modules to load (`#656 <https://github.com/ClearcodeHQ/pytest-redis/issues/656>`__)
+- Support Python 3.12 (`#673 <https://github.com/ClearcodeHQ/pytest-redis/issues/673>`__)
+
+
+Miscellaneus
+------------
+
+- Adjusted workflows for actions-reuse 2 (`#481 <https://github.com/ClearcodeHQ/pytest-redis/issues/481>`__)
+- Migrate pydocstyle and pycodestyle to ruff. And use rstcheck to check rst files. (`#484 <https://github.com/ClearcodeHQ/pytest-redis/issues/484>`__)
+- Update code formatting for black 24.1 (`#602 <https://github.com/ClearcodeHQ/pytest-redis/issues/602>`__)
+- Drop Pipfile.lock from repository.
+  Will rely on a cached in Pipeline or artifact. (`#604 <https://github.com/ClearcodeHQ/pytest-redis/issues/604>`__)
+- Drop old install_py test step, that's supposed to install packages for caching purposes. (`#674 <https://github.com/ClearcodeHQ/pytest-redis/issues/674>`__)
+- Test against Redis 7.2 (`#675 <https://github.com/ClearcodeHQ/pytest-redis/issues/675>`__)
+
+
 3.0.2 (2023-04-19)
 ==================
 

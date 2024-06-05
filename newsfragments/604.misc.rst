@@ -1,2 +1,0 @@
-Drop Pipfile.lock from repository.
-Will rely on a cached in Pipeline or artifact.

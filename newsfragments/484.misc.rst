@@ -1,1 +1,0 @@
-Migrate pydocstyle and pycodestyle to ruff. And use rstcheck to check rst files.
