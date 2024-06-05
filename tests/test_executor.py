@@ -8,7 +8,7 @@ import pytest
 import redis
 from mirakuru.exceptions import ProcessExitedWithError, TimeoutExpired
 from mock import mock
-from pkg_resources import parse_version
+from packaging.version import parse
 from port_for import get_port
 from pytest import FixtureRequest, TempPathFactory
 
@@ -196,7 +196,7 @@ def test_too_long_unixsocket(request: FixtureRequest, tmp_path_factory: TempPath
 )
 def test_extract_version(text: str, result: str) -> None:
     """Check if the version extracction works correctly."""
-    assert extract_version(text) == parse_version(result)
+    assert extract_version(text) == parse(result)
 
 
 def test_extract_version_notfound() -> None:

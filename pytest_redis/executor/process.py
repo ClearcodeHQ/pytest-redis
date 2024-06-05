@@ -9,7 +9,7 @@ from tempfile import gettempdir
 from typing import Any, List, Literal, Optional
 
 from mirakuru import TCPExecutor
-from pkg_resources import parse_version
+from packaging.version import Version, parse
 
 from pytest_redis.exception import RedisMisconfigured, RedisUnsupported, UnixSocketTooLong
 
@@ -18,14 +18,14 @@ if platform.system() == "Linux":
     MAX_UNIXSOCKET = 107
 
 
-def extract_version(text: str) -> Any:
+def extract_version(text: str) -> Version:
     """Extract version number from the text.
 
     :param text: text that contains the version number
     """
     matches = re.search(r"\d+(?:\.\d+)+", text)
     assert matches is not None
-    return parse_version(matches.group(0))
+    return parse(matches.group(0))
 
 
 class RedisExecutor(TCPExecutor):
@@ -35,7 +35,7 @@ class RedisExecutor(TCPExecutor):
     and properly constructing command to start redis-server.
     """
 
-    MIN_SUPPORTED_VERSION = parse_version("2.6")
+    MIN_SUPPORTED_VERSION: Version = parse("2.6")
     """
     Minimum required version of redis that is accepted by pytest-redis.
     """
@@ -129,7 +129,7 @@ class RedisExecutor(TCPExecutor):
         if password:
             command.extend(["--requirepass", str(password)])
         if save:
-            if self.version < parse_version("7"):
+            if self.version < parse("7"):
                 save_parts = save.split()
                 assert all(
                     (part.isdigit() for part in save_parts)
