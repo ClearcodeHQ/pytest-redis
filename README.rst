@@ -111,7 +111,9 @@ In order to connect to them, one would be using the ``redis_nooproc`` fixture.
 
         assert redis_external.get("did_it") == 1
 
-Standard configuration options apply to it.
+Standard configuration options apply to it. Note that the `modules` configuration option
+has no effect with the ``redis_nooproc`` fixture, it is the responsibility of the already
+running redis server to be properly started with extension modules, if needed.
 
 By default the ``redis_nooproc`` fixture would connect to Redis
 instance using **6379** port attempting to make a successful socket
@@ -226,6 +228,12 @@ You can pick which you prefer, but remember that these settings are handled in t
      - datadir
      - --redis-datadir
      - redis_datadir
+     - -
+     - ""
+   * - Redis test instance extension module(s) path
+     - modules (list of paths)
+     - --redis-modules (comma-separated string)
+     - redis_modules (comma-separated string)
      - -
      - ""
 

@@ -1,6 +1,6 @@
 """Config loading helpers."""
 
-from typing import Any, Optional, TypedDict
+from typing import Any, List, Optional, TypedDict
 
 from _pytest.fixtures import FixtureRequest
 
@@ -22,6 +22,7 @@ class RedisConfigType(TypedDict):
     syslog: bool
     decode: bool
     datadir: str
+    modules: List[str]
 
 
 def get_config(request: FixtureRequest) -> RedisConfigType:
@@ -32,6 +33,10 @@ def get_config(request: FixtureRequest) -> RedisConfigType:
         return request.config.getoption(option_name) or request.config.getini(option_name)
 
     port = get_conf_option("port")
+    if (modules := get_conf_option("modules")) is not None:
+        modules = modules.split(",")
+    else:
+        modules = []
     config: RedisConfigType = {
         "host": get_conf_option("host"),
         "port": int(port) if port else None,
@@ -47,5 +52,6 @@ def get_config(request: FixtureRequest) -> RedisConfigType:
         "syslog": bool(get_conf_option("syslog")),
         "decode": bool(get_conf_option("decode")),
         "datadir": get_conf_option("datadir"),
+        "modules": modules,
     }
     return config
