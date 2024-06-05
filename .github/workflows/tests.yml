@@ -22,7 +22,7 @@ jobs:
         key: redis-${{ hashFiles('.download-redis.sh') }}
     - name: Download and build Redis
       run: ./.download-redis.sh
-  tests_7:
+  tests_7_2:
     needs: [download_redis]
     runs-on: ubuntu-latest
     strategy:
@@ -37,10 +37,27 @@ jobs:
       - uses: ./.github/actions/pytest
         with:
           python-version: ${{ matrix.python-version }}
-          redis: "7"
+          redis: "7.2"
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
-  tests_6:
-    needs: [tests_7]
+  tests_7_0:
+    needs: [download_redis]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: [3.8, 3.9, "3.10", "3.11", "3.12", pypy-3.9]
+    env:
+      OS: ubuntu-latest
+      PYTHON: ${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/pytest
+        with:
+          python-version: ${{ matrix.python-version }}
+          redis: "7.0"
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
+  tests_6_2:
+    needs: [tests_7_0]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -57,12 +74,12 @@ jobs:
           redis: "6.2"
           codecov_token: ${{ secrets.CODECOV_TOKEN }}
   tests_6_0:
-    needs: [tests_6]
+    needs: [tests_6_2]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        python-version: [3.8, 3.9, "3.10", "3.11", "3.12", pypy-3.9]
+        python-version: [3.9, "3.10", "3.11", "3.12", pypy-3.9]
     env:
       OS: ubuntu-latest
       PYTHON: ${{ matrix.python-version }}

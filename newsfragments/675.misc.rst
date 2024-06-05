@@ -1,0 +1,1 @@
+Test against Redis 7.2
