@@ -94,12 +94,7 @@ def redis_proc(
         else:
             redis_datadir = tmp_path_factory.mktemp(f"pytest-redis-{request.fixturename}")
 
-        if modules:
-            redis_modules = modules
-        elif config["modules"]:
-            redis_modules = config["modules"].split(",")
-        else:
-            redis_modules = []
+        redis_modules = modules or config["modules"]
 
         redis_port = get_port(port) or get_port(config["port"])
         assert redis_port
