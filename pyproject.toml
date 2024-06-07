@@ -68,7 +68,7 @@ include = '.*\.pyi?$'
 [tool.ruff]
 # Decrease the maximum line length to 79 characters.
 line-length = 100
-select = [
+lint.select = [
     "E",   # pycodestyle
     "F",   # pyflakes
     "I",   # isort
