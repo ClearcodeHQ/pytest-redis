@@ -3,6 +3,16 @@ CHANGELOG
 
 .. towncrier release notes start
 
+3.1.1 (2024-06-10)
+==================
+
+Bugfixes
+--------
+
+- Fixed redis factories module, where imports from submodule
+  on the main `factories` level were removed by linter. (`#679 <https://github.com/ClearcodeHQ/pytest-redis/issues/679>`__)
+
+
 3.1.0 (2024-06-05)
 ==================
 

@@ -1,2 +1,0 @@
-Fixed redis factories module, where imports from submodule
-on the main `factories` level were removed by linter.
