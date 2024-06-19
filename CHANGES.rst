@@ -3,6 +3,15 @@ CHANGELOG
 
 .. towncrier release notes start
 
+3.1.2 (2024-06-19)
+==================
+
+Bugfixes
+--------
+
+- Fix compatibility with pytest < 8 (`#677 <https://github.com/ClearcodeHQ/pytest-redis/issues/677>`__)
+
+
 3.1.1 (2024-06-10)
 ==================
 
