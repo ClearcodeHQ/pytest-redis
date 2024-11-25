@@ -1,0 +1,2 @@
+Dropped Redis 6.0 and 7.0 from CI
+Add Redis 7.4 into CI
