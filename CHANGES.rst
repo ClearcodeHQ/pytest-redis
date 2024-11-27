@@ -3,6 +3,28 @@ CHANGELOG
 
 .. towncrier release notes start
 
+3.1.3 (2024-11-27)
+==================
+
+Breaking changes
+----------------
+
+- Drop support for Python 3.8
+
+
+Features
+--------
+
+- Mark support for python 3.13
+
+
+Miscellaneus
+------------
+
+- Dropped Redis 6.0 and 7.0 from CI
+  Add Redis 7.4 into CI
+
+
 3.1.2 (2024-06-19)
 ==================
 
