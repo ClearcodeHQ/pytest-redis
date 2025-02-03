@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    uses: fizyk/actions-reuse/.github/workflows/linters-python.yml@v2.5.0
+    uses: fizyk/actions-reuse/.github/workflows/linters-python.yml@v2.5.1
     with:
       mypy: true
       black: true
